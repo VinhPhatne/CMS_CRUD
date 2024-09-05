@@ -17,7 +17,6 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT } from '@constants/index';
 import { formatDateString } from '@utils/index';
-import NumericField from '@components/common/form/NumericField';
 
 dayjs.extend(customParseFormat);
 
@@ -56,7 +55,6 @@ const CourseForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
     const handleSubmit = (values) => {
         values.dateRegister = dayjs().format(DEFAULT_FORMAT);
         values.dateEnd = formatDateString(values.dateEnd, DEFAULT_FORMAT);
-        console.log('Data to submit:', { ...values, avatar: avatarUrl });
         return mixinFuncs.handleSubmit({ ...values, avatar: avatarUrl });
     };
 

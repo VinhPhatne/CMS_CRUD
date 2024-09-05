@@ -436,7 +436,6 @@ const useListBase = ({
         buttonProps,
     ) => {
         const isRender = checkPermission(action);
-        console.log('isRender',isRender);
         if (!isRender) return;
         return {
             align: 'center',
