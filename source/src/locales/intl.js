@@ -32,7 +32,7 @@ export const commonMessage = defineMessages({
     login: 'Login',
     email: 'Email',
     bio: 'bio',
-
+    nameCourses: 'Course names',
     name: 'Name',
     description: 'Description',
     groupPermission: 'Group Permission',

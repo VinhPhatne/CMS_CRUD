@@ -1,4 +1,4 @@
-import { Card, Col, Form, Row, Space } from 'antd';
+import { Card, Col, Form, InputNumber, Row, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
 import TextField from '@components/common/form/TextField';
@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT } from '@constants/index';
 import { formatDateString } from '@utils/index';
+import NumericField from '@components/common/form/NumericField';
 
 dayjs.extend(customParseFormat);
 
@@ -53,7 +54,7 @@ const CourseForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
     };
 
     const handleSubmit = (values) => {
-        values.createdDate = formatDateString(values.createdDate, DEFAULT_FORMAT);
+        values.dateRegister = dayjs().format(DEFAULT_FORMAT);
         values.dateEnd = formatDateString(values.dateEnd, DEFAULT_FORMAT);
         console.log('Data to submit:', { ...values, avatar: avatarUrl });
         return mixinFuncs.handleSubmit({ ...values, avatar: avatarUrl });
@@ -68,7 +69,7 @@ const CourseForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
     }, [isEditing]);
 
     useEffect(() => {
-        dataDetail.createdDate = dataDetail.createdDate && dayjs(dataDetail.createdDate, DEFAULT_FORMAT);
+        dataDetail.dateRegister = dataDetail.dateRegister && dayjs(dataDetail.dateRegister, DEFAULT_FORMAT);
         dataDetail.dateEnd = dataDetail.dateEnd && dayjs(dataDetail.dateEnd, DEFAULT_FORMAT);
         form.setFieldsValue({
             ...dataDetail,
@@ -121,10 +122,10 @@ const CourseForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
                 <Row gutter={10}>
                     <Col span={12}>
                         <DatePickerField
-                            name="createdDate"
+                            name="dateRegister"
                             label={<FormattedMessage defaultMessage="Ngày bắt đầu" />}
                             placeholder="Ngày bắt đầu"
-                            format={DATE_FORMAT_DISPLAY} 
+                            format={DATE_FORMAT_DISPLAY}
                             style={{ width: '100%' }}
                             required
                         />
@@ -173,20 +174,26 @@ const CourseForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
                 </Row>
                 <Row gutter={24}>
                     <Col span={12}>
-                        <TextField
-                            required
-                            label={<FormattedMessage defaultMessage="Học phí" />}
-                            name="fee"
-                            addonAfter="đ"
-                        />
+                        <Form.Item label={<FormattedMessage defaultMessage="Học phí" />} name="fee" required>
+                            <InputNumber
+                                addonAfter="đ"
+                                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                max={10000000000}
+                                min={0}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
                     </Col>
                     <Col span={12}>
-                        <TextField
-                            required
-                            label={<FormattedMessage defaultMessage="Phí hoàn trả" />}
-                            name="returnFee"
-                            addonAfter="đ"
-                        />
+                        <Form.Item label={<FormattedMessage defaultMessage="Phí hoàn trả" />} name="returnFee" required>
+                            <InputNumber
+                                addonAfter="đ"
+                                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                max={10000000000}
+                                min={0}
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={24}>

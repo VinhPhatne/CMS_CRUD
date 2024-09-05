@@ -145,14 +145,8 @@ const CourseListPage = () => {
 
     const searchFields = [
         {
-            key: 'title',
-            placeholder: translate.formatMessage(commonMessage.title),
-        },
-        {
-            key: 'categoryId',
-            placeholder: translate.formatMessage(commonMessage.category),
-            type: FieldTypes.SELECT,
-            options: categories,
+            key: 'name',
+            placeholder: translate.formatMessage(commonMessage.nameCourses),
         },
         {
             key: 'status',
@@ -194,8 +188,7 @@ const CourseListPage = () => {
                 footer={null}
                 centered
                 onCancel={() => setShowPreviewModal(false)}
-            >
-            </Modal>
+            ></Modal>
         </PageWrapper>
     );
 };

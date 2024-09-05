@@ -136,7 +136,6 @@ const useListBase = ({
     const { pathname: pagePath } = useLocation();
     const { permissions } = useAuth();
 
-    console.log('permissions',permissions);
     const navigate = useNavigate();
     const intl = useIntl();
 
