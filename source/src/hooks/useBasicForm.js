@@ -22,6 +22,11 @@ const useBasicForm = ({ onSubmit, setIsChangedFormValues, onResetForm, override,
     };
 
     const handleCallBackAfterSubmitForm = ({ response }) => {
+        if (!response) {
+            console.error("Response is undefined or null");
+            return;
+        }
+    
         const { data } = response;
         let errorField = [];
         if (!data?.result && data?.data?.length > 0) {
