@@ -1,9 +1,6 @@
 import { Card, Checkbox, Col, Form, InputNumber, Row, Space, Table, TimePicker } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
-import TextField from '@components/common/form/TextField';
-import CropImageField from '@components/common/form/CropImageField';
-import { AppConstants } from '@constants';
 import useFetch from '@hooks/useFetch';
 import apiConfig from '@constants/apiConfig';
 import SelectField from '@components/common/form/SelectField';
@@ -78,7 +75,6 @@ const RegisterCourseForm = ({
                 courseId: dataDetail?.courseId,
             });
 
-            // Parse và định dạng schedule
             const schedule = dataDetail.schedule ? JSON.parse(dataDetail.schedule) : {};
             const updatedScheduleData = DAYS_OF_WEEK.map((day) => {
                 if (schedule[day.key]) {
@@ -129,7 +125,6 @@ const RegisterCourseForm = ({
             return item;
         });
         setScheduleData(newScheduleData);
-        // Cập nhật giá trị form
         form.setFieldsValue({ schedule: JSON.stringify(newScheduleData) });
     };
 
@@ -152,7 +147,7 @@ const RegisterCourseForm = ({
     };
 
     const initialValues = {
-        isIntern: 0, // Mặc định là 0
+        isIntern: 0,
     };
 
     const handleCheckboxChange = (e) => {

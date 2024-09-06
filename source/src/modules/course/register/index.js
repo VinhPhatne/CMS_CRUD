@@ -17,7 +17,6 @@ import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Link from 'antd/es/typography/Link';
 const message = defineMessages({
     objectName: 'course',
 });
@@ -30,12 +29,10 @@ const RegistrationCourseListPage = () => {
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.courses.update);
 
-
     const location = useLocation();
 
     const { pathname: pagePath } = useLocation();
 
-    // Sử dụng URLSearchParams để lấy các tham số từ URL
     const queryParams = new URLSearchParams(location.search);
     const courseId = queryParams.get('courseId');
     const courseName = queryParams.get('courseName');
@@ -73,32 +70,6 @@ const RegistrationCourseListPage = () => {
         },  
     });
 
-    const {
-        execute: executeGetCourseStudent,
-        loading: getCourseStudent,
-        data: courseStudentContent,
-    } = useFetch(apiConfig.registration, {
-        immediate: false,
-        mappingData: ({ data }) => data.content,
-    });
-
-    const {
-        data: categories,
-        loading: getCategoriesLoading,
-        execute: executeGetCategories,
-    } = useFetch(apiConfig.category.autocomplete, {
-        immediate: true,
-        mappingData: ({ data }) =>
-            data.content
-                .map((item) => ({
-                    value: item?.id,
-                    label: item?.name,
-                }))
-                .filter((item, index, self) => {
-                    return index === self.findIndex((t) => t.value === item.value);
-                }),
-    });
-
     const formatMoney = (amount) => {
         if (isNaN(amount)) {
             return 'Invalid amount';
@@ -122,7 +93,7 @@ const RegistrationCourseListPage = () => {
         },
         {
             title: 'Tên sinh viên',
-            dataIndex: 'studentName', // Lấy tên sinh viên từ API
+            dataIndex: 'studentName', 
         },
         {
             title: <FormattedMessage defaultMessage="Giá khóa học" />,
@@ -138,11 +109,11 @@ const RegistrationCourseListPage = () => {
             title: <FormattedMessage defaultMessage="Tổng dự án" />,
             dataIndex: 'totalProject',
             render: (totalProject, record) => {
-                const { minusTrainingProjectMoney } = record; // Giá trị khác từ record
+                const { minusTrainingProjectMoney } = record; 
         
                 return (
                     <>
-                        <div>{`${totalProject}/3`}</div> {/* Giữ logic cũ */}
+                        <div>{`${totalProject}/3`}</div>
                         {minusTrainingProjectMoney !== 0 && (
                             <div style={{ color: 'orange' }}>
                                 {minusTrainingProjectMoney.toLocaleString()} đ
@@ -155,7 +126,7 @@ const RegistrationCourseListPage = () => {
         {
             title: <FormattedMessage defaultMessage="Tỉ lệ đào tạo" />,
             dataIndex: 'totalLearnCourseTime',
-            render: (time, record) => `${Math.round((time / record.totalAssignedCourseTime) * 100)}%`, // Tính tỉ lệ đào tạo
+            render: (time, record) => `${Math.round((time / record.totalAssignedCourseTime) * 100)}%`,
         },
         {
             title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
@@ -165,9 +136,9 @@ const RegistrationCourseListPage = () => {
             title: 'Lịch trình',
             dataIndex: 'schedule',
             render: (scheduleData) => {
-                const today = (new Date().getDay() + 6) % 7; // Chuyển đổi từ Chủ Nhật (0) -> Thứ Hai (0)
-                const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; // Chữ cái đầu của mỗi ngày
-                const fullDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Tên đầy đủ của ngày
+                const today = (new Date().getDay() + 6) % 7; 
+                const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; 
+                const fullDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; 
         
                 return (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
@@ -190,9 +161,9 @@ const RegistrationCourseListPage = () => {
                                         fontWeight: 'bold',
                                         boxSizing: 'border-box',
                                     }}
-                                    title={day} // Tooltip cho tên đầy đủ của ngày
+                                    title={day} 
                                 >
-                                    {hasSchedule ? daysOfWeek[index] : ''} {/* Hiển thị chữ cái nếu có lịch */}
+                                    {hasSchedule ? daysOfWeek[index] : ''} 
                                 </div>
                             );
                         })}
@@ -207,25 +178,6 @@ const RegistrationCourseListPage = () => {
                 delete: true,
             },
             { width: '130px' },
-            // {
-            //     edit: (record) => {
-            //         const baseUrl = '/course/registration/';
-            //         const url = `${baseUrl}${record.id}?courseId=${courseId}&courseName=${courseName}&courseState=${courseState}&courseStatus=${courseStatus}`;
-            //         navigate(url);
-            //     },
-            //     create: () => {
-            //         const baseUrl = '/course/registration/create';
-            //         const url = `${baseUrl}?courseId=${courseId}&courseName=${courseName}&courseState=${courseState}&courseStatus=${courseStatus}`;
-            //         navigate(url);
-            //         // return (
-            //         //     <Link
-            //         //         to = {'/course/registration/?courseId=${queryFilter.courseId}&courseName=${queryFilter.courseName}&courseState=${queryFilter.courseState}&courseStatus=${queryFilter.courseStatus}'} 
-            //         //     >
-            //         //         edit
-            //         //     </Link>
-            //         // ),
-            //     },
-            // },
         ),
     ];
 

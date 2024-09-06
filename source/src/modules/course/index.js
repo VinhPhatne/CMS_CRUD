@@ -69,33 +69,6 @@ const CourseListPage = () => {
         },
     });
 
-    const {
-        execute: executeGetCourseStudent,
-        loading: getCourseStudent,
-        data: courseStudentContent,
-    } = useFetch(apiConfig.courses.listStudent, {
-        immediate: false,
-        mappingData: ({ data }) => data.content,
-    });
-
-    const {
-        data: categories,
-        loading: getCategoriesLoading,
-        execute: executeGetCategories,
-    } = useFetch(apiConfig.category.autocomplete, {
-        immediate: true,
-        mappingData: ({ data }) =>
-            data.content
-                .map((item) => ({
-                    value: item?.id,
-                    label: item?.name,
-                }))
-                .filter((item, index, self) => {
-                    // Lọc ra các phần tử duy nhất bằng cách so sánh value
-                    return index === self.findIndex((t) => t.value === item.value);
-                }),
-    });
-
     const formatMoney = (amount) => {
         if (isNaN(amount)) {
             return 'Invalid amount';

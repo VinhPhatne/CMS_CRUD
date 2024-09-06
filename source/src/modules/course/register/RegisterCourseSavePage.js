@@ -16,7 +16,7 @@ const message = defineMessages({
 
 const RegisterCourseSavePage = () => {
     const translate = useTranslate();
-    const location = useLocation(); // Add this to get URL parameters
+    const location = useLocation(); 
     const params = new URLSearchParams(location.search);
     const courseId = params.get('courseId');
     const courseName = params.get('courseName');
