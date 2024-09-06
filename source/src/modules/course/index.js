@@ -51,51 +51,13 @@ const CourseListPage = () => {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     };
 
-    const {
-        execute: executeGetNews,
-        loading: getNewsLoading,
-        data: newsContent,
-    } = useFetch(apiConfig.courses.getById, {
-        immediate: false,
-        mappingData: ({ data }) => data.content,
-    });
-
-    const {
-        data: categories,
-        loading: getCategoriesLoading,
-        execute: executeGetCategories,
-    } = useFetch(apiConfig.category.autocomplete, {
-        immediate: true,
-        mappingData: ({ data }) =>
-            data.content
-                .map((item) => ({
-                    value: item?.id,
-                    label: item?.name,
-                }))
-                .filter((item, index, self) => {
-                    // Lọc ra các phần tử duy nhất bằng cách so sánh value
-                    return index === self.findIndex((t) => t.value === item.value);
-                }),
-    });
-
-    const handleUpdatePinTop = (item) => {
-        executeUpdateNewsPin({
-            pathParams: {
-                id: item.id,
-            },
-            data: {
-                ...item,
-                pinTop: Number(!item.pinTop),
-            },
-        });
-    };
-
     const columns = [
         {
             title: '#',
             dataIndex: 'index',
             align: 'center',
             width: 80,
+            render: (text, record, index) => index + 1,
         },
         {
             title: '#',
@@ -145,14 +107,8 @@ const CourseListPage = () => {
 
     const searchFields = [
         {
-            key: 'title',
-            placeholder: translate.formatMessage(commonMessage.title),
-        },
-        {
-            key: 'categoryId',
-            placeholder: translate.formatMessage(commonMessage.category),
-            type: FieldTypes.SELECT,
-            options: categories,
+            key: 'name',
+            placeholder: translate.formatMessage(commonMessage.nameCourses),
         },
         {
             key: 'status',
@@ -162,17 +118,8 @@ const CourseListPage = () => {
         },
     ];
 
-    useEffect(() => {
-        executeGetCategories({
-            params: {
-                kind: categoryKind.news,
-            },
-        });
-    }, []);
-
     return (
         <PageWrapper
-            loading={getNewsLoading}
             routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}
         >
             <ListPage
@@ -194,8 +141,7 @@ const CourseListPage = () => {
                 footer={null}
                 centered
                 onCancel={() => setShowPreviewModal(false)}
-            >
-            </Modal>
+            ></Modal>
         </PageWrapper>
     );
 };

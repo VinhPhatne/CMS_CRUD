@@ -23,7 +23,7 @@ export const navMenuConfig = [
         label: <FormattedMessage defaultMessage="Quản lý khóa học" />,
         key: 'quan-ly-khoa-hoc',
         icon: <IconSettings size={16} />,
-        // permission: apiConfig.category.getList.baseURL,
+        permission: apiConfig.courses.getList.baseURL,
         children: [
             {
                 label: <FormattedMessage defaultMessage="Khoá học" />,
