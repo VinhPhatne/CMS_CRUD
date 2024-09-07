@@ -6,6 +6,8 @@ export const commonMessage = defineMessages({
     posts: 'Posts',
     adminsLeader: 'Admins Leader',
     news: 'News',
+    course: 'Course',
+    registrationCourse: 'Registration Course',
     commentedAmount:'Commented Amount',
     category: 'Category',
     newsCategory: 'News Category',

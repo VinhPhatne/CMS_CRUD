@@ -106,12 +106,14 @@ const CourseListPage = () => {
         {
             title: <FormattedMessage defaultMessage="Học phí" />,
             dataIndex: 'fee',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
             title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
             width: 180,
             dataIndex: 'dateEnd',
+            align: 'right',
             render: (createdDate) => {
                 const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
                 return <div>{createdDateLocal}</div>;
@@ -144,7 +146,7 @@ const CourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}>
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.course) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}

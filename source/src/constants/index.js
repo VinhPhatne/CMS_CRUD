@@ -22,7 +22,6 @@ export const storageKeys = {
     TENANT_API_URL: `${appName}-${process.env.REACT_APP_ENV}-tenant-api-url`,
 };
 
-
 export const AppConstants = {
     apiRootUrl: process.env.REACT_APP_API,
     contentRootUrl: `${process.env.REACT_APP_API_MEDIA}v1/file/download`,
@@ -120,6 +119,17 @@ export const GROUP_KIND_ADMIN = 1;
 export const GROUP_KIND_MANAGER = 2;
 export const GROUP_KIND_USER = 3;
 
+export const REGISTRATION_STATE_REGISTER = 1;
+export const REGISTRATION_STATE_LEARNING = 2;
+export const REGISTRATION_STATE_FINISHED = 3;
+export const REGISTRATION_STATE_CANCEL = 4;
+
+export const STATE_COURSE_PREPARED = 1;
+export const STATE_COURSE_STARTED = 2;
+export const STATE_COURSE_FINISHED = 3;
+export const STATE_COURSE_CANCELED = 4;
+export const STATE_COURSE_RECRUITED = 5;
+
 export const groupPermissionKindsOptions = [
     { label: 'Admin', value: GROUP_KIND_ADMIN },
     { label: 'Manager', value: GROUP_KIND_MANAGER },
@@ -142,4 +152,3 @@ export const SettingTypes = {
 };
 
 export const ADMIN_LOGIN_TYPE = 'password';
-

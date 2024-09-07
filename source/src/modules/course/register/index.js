@@ -18,7 +18,7 @@ import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 const message = defineMessages({
-    objectName: 'course',
+    objectName: 'Registration Course',
 });
 
 const RegistrationCourseListPage = () => {
@@ -98,11 +98,13 @@ const RegistrationCourseListPage = () => {
         {
             title: <FormattedMessage defaultMessage="Giá khóa học" />,
             dataIndex: 'courseFee',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
             title: <FormattedMessage defaultMessage="Số tiền đã đóng" />,
             dataIndex: 'totalMoneyInput',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
@@ -136,15 +138,31 @@ const RegistrationCourseListPage = () => {
             title: 'Lịch trình',
             dataIndex: 'schedule',
             render: (scheduleData) => {
-                const today = (new Date().getDay() + 6) % 7; 
+                let parsedSchedule = {};
+                try {
+                    parsedSchedule = JSON.parse(scheduleData);
+                } catch (e) {
+                    console.error('Error parsing schedule data:', e);
+                    return null;
+                }
+        
                 const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; 
-                const fullDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; 
+                const dayMap = {
+                    t2: 0, 
+                    t3: 1, 
+                    t4: 2, 
+                    t5: 3, 
+                    t6: 4, 
+                    t7: 5, 
+                    cn: 6,  
+                };
         
                 return (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                        {fullDaysOfWeek.map((day, index) => {
-                            const isToday = index === today; 
-                            const hasSchedule = scheduleData[index];
+                        {daysOfWeek.map((day, index) => {
+                            const isToday = index === (new Date().getDay() + 6) % 7;
+                            const dayKey = Object.keys(dayMap).find(key => dayMap[key] === index);
+                            const hasSchedule = dayKey && parsedSchedule[dayKey];
         
                             return (
                                 <div
@@ -161,9 +179,9 @@ const RegistrationCourseListPage = () => {
                                         fontWeight: 'bold',
                                         boxSizing: 'border-box',
                                     }}
-                                    title={day} 
+                                    title={day}
                                 >
-                                    {hasSchedule ? daysOfWeek[index] : ''} 
+                                    {hasSchedule ? daysOfWeek[index] : ''}
                                 </div>
                             );
                         })}
@@ -182,7 +200,7 @@ const RegistrationCourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}>
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
@@ -195,14 +213,6 @@ const RegistrationCourseListPage = () => {
                     />
                 }
             />
-            <Modal
-                title={<FormattedMessage defaultMessage="Preview" />}
-                width={1000}
-                open={showPreviewModal}
-                footer={null}
-                centered
-                onCancel={() => setShowPreviewModal(false)}
-            ></Modal>
         </PageWrapper>
     );
 };

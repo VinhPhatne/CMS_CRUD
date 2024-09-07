@@ -49,7 +49,13 @@ const RegisterCourseSavePage = () => {
         },
     });
     return (
-        <PageWrapper loading={loading} routes={[{ breadcrumbName: title }]} title={title}>
+        <PageWrapper 
+            loading={loading} 
+            routes={[
+                { breadcrumbName: <FormattedMessage defaultMessage="Courses" />, path: routes.coursesPage.path },
+                { breadcrumbName: title },
+            ]}  
+            title={title}>
             <RegisterCourseForm
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}

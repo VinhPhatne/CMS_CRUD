@@ -40,7 +40,13 @@ const CourseSavePage = () => {
         },
     });
     return (
-        <PageWrapper loading={loading} routes={[{ breadcrumbName: title }]} title={title}>
+        <PageWrapper 
+            loading={loading} 
+            routes={[
+                { breadcrumbName: <FormattedMessage defaultMessage="Courses" />, path: routes.coursesPage.path },
+                { breadcrumbName: title },
+            ]} 
+            title={title}>
             <CourseForm
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}

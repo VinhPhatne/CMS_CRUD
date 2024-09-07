@@ -88,5 +88,8 @@
             "npm run lint",
             "git add ."
         ]
+    },
+    "devDependencies": {
+        "babel-plugin-formatjs": "^10.5.16"
     }
 }
