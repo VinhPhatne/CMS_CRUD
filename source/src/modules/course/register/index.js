@@ -17,6 +17,7 @@ import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
+import routes from '../routes';
 const message = defineMessages({
     objectName: 'Registration Course',
 });
@@ -126,11 +127,6 @@ const RegistrationCourseListPage = () => {
             },
         },
         {
-            title: <FormattedMessage defaultMessage="Tỉ lệ đào tạo" />,
-            dataIndex: 'totalLearnCourseTime',
-            render: (time, record) => `${Math.round((time / record.totalAssignedCourseTime) * 100)}%`,
-        },
-        {
             title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
             dataIndex: 'studentName',
         },
@@ -200,7 +196,10 @@ const RegistrationCourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) }]}>
+        <PageWrapper routes={[
+            { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
+            { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) }, 
+        ]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}

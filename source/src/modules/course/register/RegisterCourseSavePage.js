@@ -9,6 +9,7 @@ import routes from '../routes';
 import useTranslate from '@hooks/useTranslate';
 import RegisterCourseForm from './RegisterCourseForm';
 import { useLocation } from 'react-router-dom';
+import { commonMessage } from '@locales/intl';
 
 const message = defineMessages({
     objectName: 'courses registration',
@@ -52,7 +53,8 @@ const RegisterCourseSavePage = () => {
         <PageWrapper 
             loading={loading} 
             routes={[
-                { breadcrumbName: <FormattedMessage defaultMessage="Courses" />, path: routes.coursesPage.path },
+                { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
+                { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse), path: routes.registerListPage.path },
                 { breadcrumbName: title },
             ]}  
             title={title}>
