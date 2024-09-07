@@ -1,7 +1,7 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Modal, Tag } from 'antd';
+import { Button, Modal, Tag, Tooltip  } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { EyeOutlined, UserOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
@@ -126,10 +126,10 @@ const RegistrationCourseListPage = () => {
                 );
             },
         },
-        {
-            title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
-            dataIndex: 'studentName',
-        },
+        // {
+        //     title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
+        //     dataIndex: 'studentName',
+        // },
         {
             title: 'Lịch trình',
             dataIndex: 'schedule',
@@ -159,26 +159,33 @@ const RegistrationCourseListPage = () => {
                             const isToday = index === (new Date().getDay() + 6) % 7;
                             const dayKey = Object.keys(dayMap).find(key => dayMap[key] === index);
                             const hasSchedule = dayKey && parsedSchedule[dayKey];
+                            const scheduleTime = hasSchedule ? parsedSchedule[dayKey] : null;
         
                             return (
-                                <div
+                                <Tooltip
                                     key={index}
-                                    style={{
-                                        width: '24px',
-                                        height: '24px',
-                                        border: `2px solid ${isToday ? 'red' : 'black'}`,
-                                        color: `${isToday ? 'red' : 'black'}`,
-                                        marginRight: '4px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontWeight: 'bold',
-                                        boxSizing: 'border-box',
-                                    }}
-                                    title={day}
+                                    title={scheduleTime || 'No schedule'} // Show time if available
+                                    placement="top"
                                 >
-                                    {hasSchedule ? daysOfWeek[index] : ''}
-                                </div>
+                                    <div
+                                        key={index}
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            border: `2px solid ${isToday ? 'red' : 'black'}`,
+                                            color: `${isToday ? 'red' : 'black'}`,
+                                            marginRight: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 'bold',
+                                            boxSizing: 'border-box',
+                                            cursor : 'pointer',
+                                        }}
+                                    >
+                                        {hasSchedule ? daysOfWeek[index] : ''}
+                                    </div>
+                                </Tooltip>
                             );
                         })}
                     </div>

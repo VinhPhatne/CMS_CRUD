@@ -10,6 +10,7 @@ import useTranslate from '@hooks/useTranslate';
 import RegisterCourseForm from './RegisterCourseForm';
 import { useLocation } from 'react-router-dom';
 import { commonMessage } from '@locales/intl';
+import queryString from 'query-string';
 
 const message = defineMessages({
     objectName: 'courses registration',
@@ -18,6 +19,7 @@ const message = defineMessages({
 const RegisterCourseSavePage = () => {
     const translate = useTranslate();
     const location = useLocation(); 
+    const queryString = location.search;
     const params = new URLSearchParams(location.search);
     const courseId = params.get('courseId');
     const courseName = params.get('courseName');
@@ -54,7 +56,7 @@ const RegisterCourseSavePage = () => {
             loading={loading} 
             routes={[
                 { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
-                { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse), path: routes.registerListPage.path },
+                { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse), path: `course/registration${queryString}` },
                 { breadcrumbName: title },
             ]}  
             title={title}>

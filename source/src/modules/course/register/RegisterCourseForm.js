@@ -37,8 +37,6 @@ const RegisterCourseForm = ({
     categories,
     isEditing,
 }) => {
-    const { execute: executeUpFile } = useFetch(apiConfig.file.upload);
-    const { execute: executeStudentSearch } = useFetch(apiConfig.student.autocomplete);
 
     const queryParams = new URLSearchParams(window.location.search);
     const courseId = queryParams.get('courseId');
@@ -63,14 +61,6 @@ const RegisterCourseForm = ({
             ],
         })),
     );
-
-    const [timeValues, setTimeValues] = useState({
-        monday: [null, null],
-        tuesday: [null, null],
-        wednesday: [null, null],
-        thursday: [null, null],
-        friday: [null, null],
-    });
 
     useEffect(() => {
         if (dataDetail) {
@@ -213,36 +203,8 @@ const RegisterCourseForm = ({
         form.setFieldsValue({ isIntern: e.target.checked ? 1 : 0 });
     };
 
-    const fetchStudentData = async (studentId) => {
-        try {
-            const response = await executeStudentSearch({
-                name: '', 
-                page: 0,
-                size: 10,
-                pageNumber: 0,
-                ignoreRegistration: true,
-                courseId: courseId,
-            });
-    
-            const student = response?.data?.content?.find(student => student.account.id === studentId);
-            return student;
-        } catch (error) {
-            console.error('Error fetching student data:', error);
-            return null;
-        }
-    };
-
-    const handleStudentIdChange = async (value) => {
-        const student = await fetchStudentData(value);
-        if (student) {
-            form.setFieldsValue({
-                studentId: student.account.id,
-            });
-        } else {
-            form.setFieldsValue({
-                studentId: value,
-            });
-        }
+    const handleStudentIdChange = (value) => {
+        form.setFieldsValue({ studentId: value });
     };
 
     const columns = [
@@ -335,19 +297,12 @@ const RegisterCourseForm = ({
                             name={['studentId']}
                             apiConfig={apiConfig.student.autocomplete}
                             mappingOptions={(item) => ({ value: item.id, label: item.account?.fullName })}
-                            searchParams={(text) => ({
-                                name: text,
-                                page: 0, 
-                                size: 10, 
-                                pageNumber: 0, 
-                                ignoreRegistration: true,
-                                courseId: courseId,
-                            })}
+                            initialSearchParams={{ courseId: courseId, ignoreRegistration: 'true' }}
+                            searchParams={(text) => ({ name: text })}
                             onChange={handleStudentIdChange}
                             required
                             disabled={isEditing}
                         />
-
                     </Col>
                     <Col span={12}>
                         <SelectField
