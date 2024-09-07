@@ -130,6 +130,12 @@ export const STATE_COURSE_FINISHED = 3;
 export const STATE_COURSE_CANCELED = 4;
 export const STATE_COURSE_RECRUITED = 5;
 
+export const STATE_PROJECT_CREATE = 1;
+export const STATE_PROJECT_RUNNING = 2;
+export const STATE_PROJECT_DONE = 3;
+export const STATE_PROJECT_CANCEL = 4;
+export const STATE_PROJECT_FAILED = 5;
+
 export const groupPermissionKindsOptions = [
     { label: 'Admin', value: GROUP_KIND_ADMIN },
     { label: 'Manager', value: GROUP_KIND_MANAGER },

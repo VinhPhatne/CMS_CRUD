@@ -12,6 +12,7 @@ import SettingListPage from '@modules/listSetting';
 import SettingSavePage from '@modules/listSetting/SettingSavePage';
 import settingsRoutes from '@modules/settings/routes';
 import coursesRoutes from '@modules/course/routes';
+import projectRoutes from '@modules/project/routes';
 /*
 	auth
 		+ null: access login and not login
@@ -73,17 +74,12 @@ const routes = {
         auth: true,
         title: 'Settings page',
     },
-    // listSCoursesPageSavePage: {
-    //     path: '/courses/:id',
-    //     component: SettingSavePage,
-    //     auth: true,
-    //     title: 'Courses page',
-    // },
     ...adminsRoutes,
     ...newsRoutes,
     ...nationRoutes,
     ...settingsRoutes,
     ...coursesRoutes,
+    ...projectRoutes,
     // keep this at last
     notFound: {
         component: PageNotFound,
