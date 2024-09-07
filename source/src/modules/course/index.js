@@ -3,7 +3,7 @@ import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import { Button, Modal, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { EyeOutlined, UserOutlined } from '@ant-design/icons';
+import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
@@ -16,12 +16,14 @@ import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 const message = defineMessages({
     objectName: 'course',
 });
 
 const CourseListPage = () => {
     const translate = useTranslate();
+    const navigate = useNavigate();
     const notification = useNotification();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -42,8 +44,31 @@ const CourseListPage = () => {
                     };
                 }
             };
+            funcs.additionalActionColumnButtons = () => {
+                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
+                return {
+                    registration: ({ id, name, state, status }) => {
+                        return (
+                            <Button
+                                type="link"
+                                style={{ padding: 0 }}
+                                onClick={() => {
+                                    navigate(
+                                        `/course/registration?courseId=${id}&courseName=${encodeURIComponent(
+                                            name,
+                                        )}&courseState=${state}&courseStatus=${status}`,
+                                    );
+                                }}
+                            >
+                                <UsergroupDeleteOutlined />
+                            </Button>
+                        );
+                    },
+                };
+            };
         },
     });
+
     const formatMoney = (amount) => {
         if (isNaN(amount)) {
             return 'Invalid amount';
@@ -95,7 +120,7 @@ const CourseListPage = () => {
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
-                preview: {
+                registration: {
                     permissions: apiConfig.courses.getById.baseURL,
                 },
                 edit: true,
@@ -119,9 +144,7 @@ const CourseListPage = () => {
     ];
 
     return (
-        <PageWrapper
-            routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}
-        >
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
@@ -134,14 +157,6 @@ const CourseListPage = () => {
                     />
                 }
             />
-            <Modal
-                title={<FormattedMessage defaultMessage="Preview" />}
-                width={1000}
-                open={showPreviewModal}
-                footer={null}
-                centered
-                onCancel={() => setShowPreviewModal(false)}
-            ></Modal>
         </PageWrapper>
     );
 };

@@ -17,6 +17,25 @@ export const languageOptions = [
     { value: 3, label: 'Other' },
 ];
 
+export const REGISTRATION_STATE_REGISTER = 1;
+export const REGISTRATION_STATE_LEARNING = 2;
+export const REGISTRATION_STATE_FINISHED = 3;
+export const REGISTRATION_STATE_CANCEL = 4;
+
+export const stateResgistrationMessage = defineMessages({
+    register: 'Đăng ký',
+    learning: 'Đang học',
+    finished: 'Đã hoàn thành',
+    canceled: 'Đã huỷ',
+});
+
+export const stateResgistration = [
+    { value: REGISTRATION_STATE_REGISTER, label: stateResgistrationMessage.register, color: '#00A648' },
+    { value: REGISTRATION_STATE_LEARNING, label: stateResgistrationMessage.learning, color: '#FFBF00' },
+    { value: REGISTRATION_STATE_FINISHED, label: stateResgistrationMessage.finished, color: '#CC0000' },
+    { value: REGISTRATION_STATE_CANCEL, label: stateResgistrationMessage.canceled, color: '#CC0000' },
+];
+
 export const orderOptions = [
     { value: 1, label: '1' },
     { value: 2, label: '2' },
