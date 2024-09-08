@@ -1,7 +1,7 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Card, Col, DatePicker, Modal, Row, Tag } from 'antd';
+import { Button, Modal, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
@@ -11,21 +11,21 @@ import { AppConstants, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constant
 import { FieldTypes } from '@constants/formConfig';
 import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
-import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { stateProjectOptions, statusOptions } from '@constants/masterData';
 import { useNavigate } from 'react-router-dom';
 import useNotification from '@hooks/useNotification';
 import useFetch from '@hooks/useFetch';
-import { DollarTwoTone, FileDoneOutlined } from '@ant-design/icons';
-import moment from 'moment';
+import { DollarTwoTone } from '@ant-design/icons';
 import DatePickerField from '@components/common/form/DatePickerField';
 import { DATE_FORMAT_DISPLAY } from '@constants/index';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { BaseForm } from '@components/common/form/BaseForm';
-import SalaryModal from './SalaryModal';
+import useDisclosure from '@hooks/useDisclosure';
+import { useForm } from 'antd/es/form/Form';
+import { formatDateString } from '@utils/index';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
@@ -39,42 +39,115 @@ const ProjectListPage = () => {
     const navigate = useNavigate();
     const notification = useNotification();
 
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedProject, setSelectedProject] = useState(null);
     const [salary, setSalary] = useState();
+    const [isOpen, { open, close }] = useDisclosure();
+    const [isEditing, setIsEditing] = useState(false);
+
+    const [form] = useForm();
 
     const convertUtcToLocalTime = (utcDate, format) => {
         return dayjs.utc(utcDate).local().format(format);
     };
 
+    const { loading: fetchingDate, execute: fetchSalaryPeriodDate } = useFetch(
+        apiConfig.registerSalaryPeriod.getNewSalaryPeriodDate,
+        {
+            immediate: false,
+            mappingData: ({ data }) => data.dueDate,
+        },
+    );
+
+    const { execute: registerSalary } = useFetch(apiConfig.registerSalaryPeriod.create, {
+        immediate: false,
+    });
+    const { execute: updateRegisterSalary } = useFetch(apiConfig.registerSalaryPeriod.update, {
+        immediate: false,
+    });
+
     const stateValues = translate.formatKeys(stateProjectOptions, ['label']);
     const statusValues = translate.formatKeys(statusOptions, ['label']);
 
-    const parseDate = (dateString) => {
-        return dayjs(dateString, 'DD/MM/YYYY');
+    const handleIconClick = async (id, dueDate, registerSalaryId) => {
+        dueDate != null ? setIsEditing(true) : setIsEditing(false);
+        registerSalaryId != null ? setSalary(registerSalaryId) : null;
+
+        setSelectedProject(id);
+        try {
+            const result = await fetchSalaryPeriodDate({
+                pathParams: { projectId: id },
+                onCompleted: (data) => {
+                    if (data.data) {
+                        setSelectedDate(dayjs(data.data, DATE_FORMAT_DISPLAY));
+                    } else {
+                        setSelectedDate(null);
+                    }
+                    open();
+                },
+                onError: (error) => {
+                    notification({
+                        type: 'error',
+                        title: 'Error',
+                        message: error.message || 'Failed to fetch salary period date.',
+                    });
+                },
+            });
+            if (dueDate) {
+                form.setFieldsValue({
+                    dueDate: dayjs(dueDate, DATE_FORMAT_DISPLAY),
+                });
+            } else {
+                form.resetFields();
+            }
+        } catch (error) {
+            console.error('Failed to fetch salary period date:', error.message);
+        }
     };
 
-    const handleIconClick = (id, isRegisteredSalaryPeriod, registerSalaryPeriod) => {
-        if (isRegisteredSalaryPeriod && registerSalaryPeriod && registerSalaryPeriod.dueDate) {
-            setSelectedProject({ id, registerSalaryPeriod });
-            const parsedDate = dayjs(registerSalaryPeriod.dueDate, 'DD/MM/YYYY');
-            if (parsedDate.isValid()) {
-                setSelectedDate(parsedDate); 
-            } else {
-                setSelectedDate(null); 
+    const handleSubmit = async (values) => {
+        values.dueDate = formatDateString(values.dueDate, DEFAULT_FORMAT);
+        if (!isEditing) {
+            const dataCreate = {
+                ...values,
+                selectedProject,
+            };
+            try {
+                await registerSalary({
+                    method: 'POST',
+                    data: dataCreate,
+                    onCompleted: (response) => {
+                        window.location.reload();
+                        close();
+                    },
+                    onError: (error) => {
+                        console.error('Error creating task:', error);
+                    },
+                });
+            } catch (error) {
+                console.error('Error saving task:', error);
             }
         } else {
-            setSelectedProject({ id });
-            setSelectedDate(null); 
+            const dataUpdate = {
+                ...values,
+                id: salary,
+            };
+            try {
+                await updateRegisterSalary({
+                    method: 'PUT',
+                    data: dataUpdate,
+                    onCompleted: (response) => {
+                        window.location.reload();
+                        close();
+                    },
+                    onError: (error) => {
+                        console.error('Error creating task:', error);
+                    },
+                });
+            } catch (error) {
+                console.error('Error saving task:', error);
+            }
         }
-        setShowPreviewModal(true);
-    };
-
-    const closeModal = () => {
-        setShowPreviewModal(false);
-        setSelectedProject(null); 
-        setSelectedDate(null);
     };
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
@@ -96,14 +169,18 @@ const ProjectListPage = () => {
             funcs.additionalActionColumnButtons = () => {
                 return {
                     salary: ({ id, isRegisteredSalaryPeriod, registerSalaryPeriod }) => {
+                        const dueDate = isRegisteredSalaryPeriod ? registerSalaryPeriod.dueDate : null;
+                        const registerSalaryId = isRegisteredSalaryPeriod ? registerSalaryPeriod.id : null;
                         return (
                             <Button
                                 type="link"
                                 style={{ padding: 0 }}
-                                onClick={handleIconClick}
+                                onClick={() => handleIconClick(id, dueDate, registerSalaryId)}
                             >
                                 <DollarTwoTone
-                                    twoToneColor={isRegisteredSalaryPeriod ? (registerSalaryPeriod ? 'gray' : 'orange') : 'orange'}
+                                    twoToneColor={
+                                        isRegisteredSalaryPeriod ? (registerSalaryPeriod ? 'gray' : 'orange') : 'orange'
+                                    }
                                 />
                             </Button>
                         );
@@ -134,17 +211,17 @@ const ProjectListPage = () => {
                 />
             ),
         },
-        { 
-            title: <FormattedMessage defaultMessage="Tên dự án" />, 
-            dataIndex: 'name', 
+        {
+            title: <FormattedMessage defaultMessage="Tên dự án" />,
+            dataIndex: 'name',
             width: 450,
             render: (name, record) => (
                 <a
                     onClick={() => {
-                        const projectId = record.id; 
-                        const projectName = encodeURIComponent(name); 
+                        const projectId = record.id;
+                        const projectName = encodeURIComponent(name);
                         const url = `/project/project-tab?projectId=${projectId}&projectName=${projectName}&active=true`;
-                        navigate(url); 
+                        navigate(url);
                     }}
                 >
                     {name}
@@ -177,11 +254,9 @@ const ProjectListPage = () => {
             width: 80,
             dataIndex: 'state',
             render: (state) => {
-                const stateOption = stateProjectOptions.find(option => option.value === state);
+                const stateOption = stateProjectOptions.find((option) => option.value === state);
                 return stateOption ? (
-                    <Tag color={stateOption.color}>
-                        {translate.formatMessage(stateOption.label)}
-                    </Tag>
+                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
                 ) : (
                     <FormattedMessage defaultMessage="Không xác định" />
                 );
@@ -220,7 +295,7 @@ const ProjectListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(message.objectName) }]}   >
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(message.objectName) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
@@ -231,17 +306,36 @@ const ProjectListPage = () => {
                         dataSource={data}
                         pagination={pagination}
                     />
-                } 
+                }
             />
-            {/* <SalaryModal
-                title={<FormattedMessage defaultMessage="Chọn ngày lương" />}
-                width={500}
-                open={showPreviewModal}
-                onCancel={() => setShowPreviewModal(false)}
+            <Modal
+                title={isEditing ? 'Cập nhật tính lương dự án' : 'Đăng ký tính lương dự án'}
+                open={isOpen}
+                onCancel={close}
                 footer={null}
-                centered
             >
-            </SalaryModal> */}
+                <BaseForm onFinish={handleSubmit} form={form} style={{ margin: 0 }}>
+                    <DatePickerField
+                        name="dueDate"
+                        label={<FormattedMessage defaultMessage="Ngày kết thúc" />}
+                        format={DATE_FORMAT_DISPLAY}
+                        disabledDate={(current) => current && current <= selectedDate.startOf('day')}
+                        style={{ width: '100%' }}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn kết thúc',
+                            },
+                        ]}
+                    />
+                    <Button onClick={close} style={{ marginRight: '16px' }}>
+                        Cancel
+                    </Button>
+                    <Button type="primary" htmlType="submit">
+                        {isEditing ? 'Cập nhật' : 'Đăng ký'}
+                    </Button>
+                </BaseForm>
+            </Modal>
         </PageWrapper>
     );
 };

@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { defineMessages } from 'react-intl';
 import { settingGroups } from '@constants/masterData';
 import routes from '@routes';
+import GeneralProjectPage from './GeneralProjectPage';
 
 const message = defineMessages({
     generalSetting: 'Cài đặt chung',
@@ -30,28 +31,36 @@ const ProjectPage = () => {
                         localStorage.setItem(routes.settingsPage.keyActiveTab, key);
                     }}
                     activeKey={activeTab}
-                    // items={[
-                    //     {
-                    //         key: settingGroups.GENERAL,
-                    //         label: translate.formatMessage(message.generalSetting),
-                    //         children: activeTab == settingGroups.GENERAL && <GeneralSettingPage groupName={settingGroups.GENERAL} />,
-                    //     },
-                    //     {
-                    //         key: settingGroups.PAGE,
-                    //         label: translate.formatMessage(message.pageSetting),
-                    //         children: activeTab == settingGroups.PAGE && <GeneralSettingPage groupName={settingGroups.PAGE} />,
-                    //     },
-                    //     {
-                    //         key: settingGroups.REVENUE,
-                    //         label: translate.formatMessage(message.generalRevenue),
-                    //         children: activeTab == settingGroups.REVENUE &&  <GeneralSettingPage groupName={settingGroups.REVENUE} />,
-                    //     },
-                    //     {
-                    //         key: settingGroups.TRAINING,
-                    //         label: translate.formatMessage(message.trainingConfig),
-                    //         children: activeTab == settingGroups.TRAINING &&  <GeneralSettingPage groupName={settingGroups.TRAINING} />,
-                    //     },
-                    // ]}
+                    items={[
+                        {
+                            key: settingGroups.GENERAL,
+                            label: translate.formatMessage(message.generalSetting),
+                            children: activeTab == settingGroups.GENERAL && (
+                                <GeneralProjectPage groupName={settingGroups.GENERAL} />
+                            ),
+                        },
+                        {
+                            key: settingGroups.PAGE,
+                            label: translate.formatMessage(message.pageSetting),
+                            children: activeTab == settingGroups.PAGE && (
+                                <GeneralProjectPage groupName={settingGroups.PAGE} />
+                            ),
+                        },
+                        {
+                            key: settingGroups.REVENUE,
+                            label: translate.formatMessage(message.generalRevenue),
+                            children: activeTab == settingGroups.REVENUE && (
+                                <GeneralProjectPage groupName={settingGroups.REVENUE} />
+                            ),
+                        },
+                        {
+                            key: settingGroups.TRAINING,
+                            label: translate.formatMessage(message.trainingConfig),
+                            children: activeTab == settingGroups.TRAINING && (
+                                <GeneralProjectPage groupName={settingGroups.TRAINING} />
+                            ),
+                        },
+                    ]}
                 />
             </Card>
         </PageWrapper>
