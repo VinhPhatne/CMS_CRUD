@@ -1,7 +1,7 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Modal, Tag } from 'antd';
+import { Button, Card, Col, DatePicker, Modal, Row, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
@@ -13,9 +13,22 @@ import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { DollarTwoTone } from '@ant-design/icons';
 import { stateProjectOptions, statusOptions } from '@constants/masterData';
 import { useNavigate } from 'react-router-dom';
+import useNotification from '@hooks/useNotification';
+import useFetch from '@hooks/useFetch';
+import { DollarTwoTone, FileDoneOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import DatePickerField from '@components/common/form/DatePickerField';
+import { DATE_FORMAT_DISPLAY } from '@constants/index';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { BaseForm } from '@components/common/form/BaseForm';
+import SalaryModal from './SalaryModal';
+
+dayjs.extend(utc);
+dayjs.extend(localizedFormat);
 
 const message = defineMessages({
     objectName: 'Dự Án',
@@ -24,9 +37,45 @@ const message = defineMessages({
 const ProjectListPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
+    const notification = useNotification();
+
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [salary, setSalary] = useState();
+
+    const convertUtcToLocalTime = (utcDate, format) => {
+        return dayjs.utc(utcDate).local().format(format);
+    };
 
     const stateValues = translate.formatKeys(stateProjectOptions, ['label']);
     const statusValues = translate.formatKeys(statusOptions, ['label']);
+
+    const parseDate = (dateString) => {
+        return dayjs(dateString, 'DD/MM/YYYY');
+    };
+
+    const handleIconClick = (id, isRegisteredSalaryPeriod, registerSalaryPeriod) => {
+        if (isRegisteredSalaryPeriod && registerSalaryPeriod && registerSalaryPeriod.dueDate) {
+            setSelectedProject({ id, registerSalaryPeriod });
+            const parsedDate = dayjs(registerSalaryPeriod.dueDate, 'DD/MM/YYYY');
+            if (parsedDate.isValid()) {
+                setSelectedDate(parsedDate); 
+            } else {
+                setSelectedDate(null); 
+            }
+        } else {
+            setSelectedProject({ id });
+            setSelectedDate(null); 
+        }
+        setShowPreviewModal(true);
+    };
+
+    const closeModal = () => {
+        setShowPreviewModal(false);
+        setSelectedProject(null); 
+        setSelectedDate(null);
+    };
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.project,
@@ -43,12 +92,20 @@ const ProjectListPage = () => {
                     };
                 }
             };
-            funcs.additionalActionColumnButtons = () => {
 
+            funcs.additionalActionColumnButtons = () => {
                 return {
-                    salary: () => {
+                    salary: ({ id, isRegisteredSalaryPeriod, registerSalaryPeriod }) => {
                         return (
-                            <DollarTwoTone />
+                            <Button
+                                type="link"
+                                style={{ padding: 0 }}
+                                onClick={handleIconClick}
+                            >
+                                <DollarTwoTone
+                                    twoToneColor={isRegisteredSalaryPeriod ? (registerSalaryPeriod ? 'gray' : 'orange') : 'orange'}
+                                />
+                            </Button>
                         );
                     },
                 };
@@ -80,7 +137,7 @@ const ProjectListPage = () => {
         { 
             title: <FormattedMessage defaultMessage="Tên dự án" />, 
             dataIndex: 'name', 
-            width: 400,
+            width: 450,
             render: (name, record) => (
                 <a
                     onClick={() => {
@@ -96,7 +153,7 @@ const ProjectListPage = () => {
         },
         {
             title: <FormattedMessage defaultMessage="Ngày bắt đầu" />,
-            width: 180,
+            width: 220,
             dataIndex: 'startDate',
             align: 'right',
             render: (startDate) => {
@@ -107,7 +164,7 @@ const ProjectListPage = () => {
 
         {
             title: <FormattedMessage defaultMessage="Ngày Kết Thúc" />,
-            width: 180,
+            width: 220,
             dataIndex: 'endDate',
             align: 'right',
             render: (endDate) => {
@@ -117,7 +174,7 @@ const ProjectListPage = () => {
         },
         {
             title: <FormattedMessage defaultMessage="Tình trạng" />,
-            width: 180,
+            width: 80,
             dataIndex: 'state',
             render: (state) => {
                 const stateOption = stateProjectOptions.find(option => option.value === state);
@@ -134,7 +191,7 @@ const ProjectListPage = () => {
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
-                salary: mixinFuncs.hasPermission([apiConfig.salaryPeriod.getById.baseURL]),
+                salary: true,
                 edit: true,
                 delete: true,
             },
@@ -162,7 +219,6 @@ const ProjectListPage = () => {
         },
     ];
 
-
     return (
         <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(message.objectName) }]}   >
             <ListPage
@@ -175,8 +231,17 @@ const ProjectListPage = () => {
                         dataSource={data}
                         pagination={pagination}
                     />
-                }
+                } 
             />
+            {/* <SalaryModal
+                title={<FormattedMessage defaultMessage="Chọn ngày lương" />}
+                width={500}
+                open={showPreviewModal}
+                onCancel={() => setShowPreviewModal(false)}
+                footer={null}
+                centered
+            >
+            </SalaryModal> */}
         </PageWrapper>
     );
 };

@@ -1,13 +1,12 @@
 import apiConfig from '@constants/apiConfig';
 import ProjectListPage from '.';
 import ProjectSavePage from './ProjectSavePage';
-// import RegisterCourseSavePage from './register/RegisterCourseSavePage';
-// import RegistrationCourseListPage from './register';
+import ProjectPage from './GeneralProject';
 
 export default {
     projectListPage: {
         path: '/project',
-        title: 'Project',
+        title: 'Projects',
         auth: true,
         component: ProjectListPage,
         permissions: [apiConfig.project.getList.baseURL],
@@ -19,16 +18,12 @@ export default {
         component: ProjectSavePage,
         permissions: [apiConfig.project.create.baseURL, apiConfig.project.update.baseURL],
     },
-    // registerListPage: {
-    //     path: '/course/registration',
-    //     title: 'Course Register Page',
-    //     auth: true,
-    //     component: RegistrationCourseListPage,
-    // },
-    // registerSavePage: {
-    //     path: '/course/registration/:id',
-    //     title: 'Course Register Page',
-    //     auth: true,
-    //     component: RegisterCourseSavePage,
-    // },
+    ProjectPage: {
+        path: '/project/project-tab',
+        title: 'Project',
+        auth: true,
+        component: ProjectPage,
+        keyActiveTab: 'activeProjectTab',
+        permissions: [apiConfig.project.getById.baseURL],
+    },
 };
