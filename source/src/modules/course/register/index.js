@@ -1,7 +1,7 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Modal, Tag } from 'antd';
+import { Button, Modal, Tag, Tooltip  } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { EyeOutlined, UserOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
@@ -17,8 +17,9 @@ import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
+import routes from '../routes';
 const message = defineMessages({
-    objectName: 'course',
+    objectName: 'Registration Course',
 });
 
 const RegistrationCourseListPage = () => {
@@ -98,11 +99,13 @@ const RegistrationCourseListPage = () => {
         {
             title: <FormattedMessage defaultMessage="Giá khóa học" />,
             dataIndex: 'courseFee',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
             title: <FormattedMessage defaultMessage="Số tiền đã đóng" />,
             dataIndex: 'totalMoneyInput',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
@@ -123,48 +126,66 @@ const RegistrationCourseListPage = () => {
                 );
             },
         },
-        {
-            title: <FormattedMessage defaultMessage="Tỉ lệ đào tạo" />,
-            dataIndex: 'totalLearnCourseTime',
-            render: (time, record) => `${Math.round((time / record.totalAssignedCourseTime) * 100)}%`,
-        },
-        {
-            title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
-            dataIndex: 'studentName',
-        },
+        // {
+        //     title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
+        //     dataIndex: 'studentName',
+        // },
         {
             title: 'Lịch trình',
             dataIndex: 'schedule',
             render: (scheduleData) => {
-                const today = (new Date().getDay() + 6) % 7; 
+                let parsedSchedule = {};
+                try {
+                    parsedSchedule = JSON.parse(scheduleData);
+                } catch (e) {
+                    console.error('Error parsing schedule data:', e);
+                    return null;
+                }
+        
                 const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; 
-                const fullDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; 
+                const dayMap = {
+                    t2: 0, 
+                    t3: 1, 
+                    t4: 2, 
+                    t5: 3, 
+                    t6: 4, 
+                    t7: 5, 
+                    cn: 6,  
+                };
         
                 return (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                        {fullDaysOfWeek.map((day, index) => {
-                            const isToday = index === today; 
-                            const hasSchedule = scheduleData[index];
+                        {daysOfWeek.map((day, index) => {
+                            const isToday = index === (new Date().getDay() + 6) % 7;
+                            const dayKey = Object.keys(dayMap).find(key => dayMap[key] === index);
+                            const hasSchedule = dayKey && parsedSchedule[dayKey];
+                            const scheduleTime = hasSchedule ? parsedSchedule[dayKey] : null;
         
                             return (
-                                <div
+                                <Tooltip
                                     key={index}
-                                    style={{
-                                        width: '24px',
-                                        height: '24px',
-                                        border: `2px solid ${isToday ? 'red' : 'black'}`,
-                                        color: `${isToday ? 'red' : 'black'}`,
-                                        marginRight: '4px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontWeight: 'bold',
-                                        boxSizing: 'border-box',
-                                    }}
-                                    title={day} 
+                                    title={scheduleTime || 'No schedule'} // Show time if available
+                                    placement="top"
                                 >
-                                    {hasSchedule ? daysOfWeek[index] : ''} 
-                                </div>
+                                    <div
+                                        key={index}
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            border: `2px solid ${isToday ? 'red' : 'black'}`,
+                                            color: `${isToday ? 'red' : 'black'}`,
+                                            marginRight: '4px',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 'bold',
+                                            boxSizing: 'border-box',
+                                            cursor : 'pointer',
+                                        }}
+                                    >
+                                        {hasSchedule ? daysOfWeek[index] : ''}
+                                    </div>
+                                </Tooltip>
                             );
                         })}
                     </div>
@@ -182,7 +203,10 @@ const RegistrationCourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}>
+        <PageWrapper routes={[
+            { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
+            { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) }, 
+        ]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
@@ -195,14 +219,6 @@ const RegistrationCourseListPage = () => {
                     />
                 }
             />
-            <Modal
-                title={<FormattedMessage defaultMessage="Preview" />}
-                width={1000}
-                open={showPreviewModal}
-                footer={null}
-                centered
-                onCancel={() => setShowPreviewModal(false)}
-            ></Modal>
         </PageWrapper>
     );
 };

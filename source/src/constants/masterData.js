@@ -1,8 +1,10 @@
-import { STATUS_ACTIVE, STATUS_INACTIVE, STATUS_PENDING,PROVINCE_KIND,DISTRICT_KIND,VILLAGE_KIND } from '@constants';
+import { STATUS_ACTIVE, STATUS_INACTIVE, STATUS_PENDING,PROVINCE_KIND,DISTRICT_KIND,VILLAGE_KIND, REGISTRATION_STATE_REGISTER, REGISTRATION_STATE_LEARNING, REGISTRATION_STATE_FINISHED, REGISTRATION_STATE_CANCEL, STATE_COURSE_PREPARED, STATE_COURSE_STARTED, STATE_COURSE_FINISHED, STATE_COURSE_CANCELED, STATE_COURSE_RECRUITED } from '@constants';
 import { defineMessages } from 'react-intl';
 import {
     nationKindMessage,
     actionMessage,
+    stateResgistrationMessage,
+    stateCourseMessage,
 } from './intl';
 
 const commonMessage = defineMessages({
@@ -16,18 +18,6 @@ export const languageOptions = [
     { value: 2, label: 'VN' },
     { value: 3, label: 'Other' },
 ];
-
-export const REGISTRATION_STATE_REGISTER = 1;
-export const REGISTRATION_STATE_LEARNING = 2;
-export const REGISTRATION_STATE_FINISHED = 3;
-export const REGISTRATION_STATE_CANCEL = 4;
-
-export const stateResgistrationMessage = defineMessages({
-    register: 'Đăng ký',
-    learning: 'Đang học',
-    finished: 'Đã hoàn thành',
-    canceled: 'Đã huỷ',
-});
 
 export const stateResgistration = [
     { value: REGISTRATION_STATE_REGISTER, label: stateResgistrationMessage.register, color: '#00A648' },
@@ -52,6 +42,14 @@ export const statusOptions = [
     { value: STATUS_ACTIVE, label: commonMessage.statusActive, color: '#00A648' },
     { value: STATUS_PENDING, label: commonMessage.statusPending, color: '#FFBF00' },
     { value: STATUS_INACTIVE, label: commonMessage.statusInactive, color: '#CC0000' },
+];
+
+export const stateCourseOptions = [
+    { value: STATE_COURSE_PREPARED, label: stateCourseMessage.prepared, color: '#00A648' },
+    { value: STATE_COURSE_STARTED, label: stateCourseMessage.started, color: '#FFBF00' },
+    { value: STATE_COURSE_FINISHED, label: stateCourseMessage.finished, color: '#CC0000' },
+    { value: STATE_COURSE_CANCELED, label: stateCourseMessage.canceled, color: '#CC0000' },
+    { value: STATE_COURSE_RECRUITED, label: stateCourseMessage.recruitment, color: '#CC0000' },
 ];
 
 export const stateOptions = [

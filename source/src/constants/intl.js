@@ -14,6 +14,21 @@ export const commonButton = defineMessages({
     login: 'Login',
 });
 
+export const stateResgistrationMessage = defineMessages({
+    register: 'Đăng ký',
+    learning: 'Đang học',
+    finished: 'Đã hoàn thành',
+    canceled: 'Đã huỷ',
+});
+
+export const stateCourseMessage = defineMessages({
+    prepared: 'Chưa bắt đầu',
+    recruitment: 'Chiêu sinh',
+    started: 'Đã bắt đầu',
+    completed: 'Đã hoàn thành',
+    canceled: 'Đã hủy',
+});
+
 export const nationKindMessage = defineMessages({
     province: 'Province',
     district: 'District',

@@ -15,8 +15,9 @@ import useNotification from '@hooks/useNotification';
 import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
+import { stateCourseOptions } from '@constants/masterData';
 const message = defineMessages({
     objectName: 'course',
 });
@@ -28,6 +29,8 @@ const CourseListPage = () => {
     const statusValues = translate.formatKeys(statusOptions, ['label']);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
     const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.courses.update);
+
+    const { formatMessage } = useIntl();
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.courses,
@@ -102,20 +105,38 @@ const CourseListPage = () => {
             title: <FormattedMessage defaultMessage="Tên môn học" />,
             width: 180,
             dataIndex: ['subject', 'subjectName'],
+            render: (subjectName, record) => (
+                <div>
+                    <div>{record.subject?.subjectName}</div>
+                    <div>{record.leader?.account?.fullName}</div>
+                </div>
+            ),
         },
         {
             title: <FormattedMessage defaultMessage="Học phí" />,
             dataIndex: 'fee',
+            align: 'right',
             render: (fee) => formatMoney(fee),
         },
         {
             title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
             width: 180,
             dataIndex: 'dateEnd',
+            align: 'right',
             render: (createdDate) => {
                 const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
                 return <div>{createdDateLocal}</div>;
             },
+        },
+        {
+            title: <FormattedMessage defaultMessage="Trạng thái" />,
+            width: 180,
+            dataIndex: 'state',
+            align: 'right',
+            // render: (stateValue) => {
+            //     const stateOption = stateCourseOptions.find(option => option.value === stateValue);
+            //     return <Tag color={stateOption ? stateOption.color : '#d9d9d9'}>{formatMessage(stateOption.label)}</Tag>;
+            // },
         },
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
@@ -144,7 +165,7 @@ const CourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.news) }]}>
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.course) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
