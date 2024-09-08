@@ -1,10 +1,11 @@
-import { STATUS_ACTIVE, STATUS_INACTIVE, STATUS_PENDING,PROVINCE_KIND,DISTRICT_KIND,VILLAGE_KIND, REGISTRATION_STATE_REGISTER, REGISTRATION_STATE_LEARNING, REGISTRATION_STATE_FINISHED, REGISTRATION_STATE_CANCEL, STATE_COURSE_PREPARED, STATE_COURSE_STARTED, STATE_COURSE_FINISHED, STATE_COURSE_CANCELED, STATE_COURSE_RECRUITED } from '@constants';
+import { STATUS_ACTIVE, STATUS_INACTIVE, STATUS_PENDING,PROVINCE_KIND,DISTRICT_KIND,VILLAGE_KIND, REGISTRATION_STATE_REGISTER, REGISTRATION_STATE_LEARNING, REGISTRATION_STATE_FINISHED, REGISTRATION_STATE_CANCEL, STATE_COURSE_PREPARED, STATE_COURSE_STARTED, STATE_COURSE_FINISHED, STATE_COURSE_CANCELED, STATE_COURSE_RECRUITED, STATE_PROJECT_CREATE, STATE_PROJECT_RUNNING, STATE_PROJECT_DONE, STATE_PROJECT_CANCEL, STATE_PROJECT_FAILED } from '@constants';
 import { defineMessages } from 'react-intl';
 import {
     nationKindMessage,
     actionMessage,
-    stateResgistrationMessage,
+    stateRegistrationMessage,
     stateCourseMessage,
+    stateProjectMessage,
 } from './intl';
 
 const commonMessage = defineMessages({
@@ -20,10 +21,10 @@ export const languageOptions = [
 ];
 
 export const stateResgistration = [
-    { value: REGISTRATION_STATE_REGISTER, label: stateResgistrationMessage.register, color: '#00A648' },
-    { value: REGISTRATION_STATE_LEARNING, label: stateResgistrationMessage.learning, color: '#FFBF00' },
-    { value: REGISTRATION_STATE_FINISHED, label: stateResgistrationMessage.finished, color: '#CC0000' },
-    { value: REGISTRATION_STATE_CANCEL, label: stateResgistrationMessage.canceled, color: '#CC0000' },
+    { value: REGISTRATION_STATE_REGISTER, label: stateRegistrationMessage.register, color: '#00A648' },
+    { value: REGISTRATION_STATE_LEARNING, label: stateRegistrationMessage.learning, color: '#FFBF00' },
+    { value: REGISTRATION_STATE_FINISHED, label: stateRegistrationMessage.finished, color: '#CC0000' },
+    { value: REGISTRATION_STATE_CANCEL, label: stateRegistrationMessage.canceled, color: '#CC0000' },
 ];
 
 export const orderOptions = [
@@ -50,6 +51,14 @@ export const stateCourseOptions = [
     { value: STATE_COURSE_FINISHED, label: stateCourseMessage.finished, color: '#CC0000' },
     { value: STATE_COURSE_CANCELED, label: stateCourseMessage.canceled, color: '#CC0000' },
     { value: STATE_COURSE_RECRUITED, label: stateCourseMessage.recruitment, color: '#CC0000' },
+];
+
+export const stateProjectOptions = [
+    { value: STATE_PROJECT_CREATE , label: stateProjectMessage.create, color: '#00A648' },
+    { value: STATE_PROJECT_RUNNING, label: stateProjectMessage.running, color: '#1890FF' },
+    { value: STATE_PROJECT_DONE , label: stateProjectMessage.done, color: '#CC0000' },
+    { value: STATE_PROJECT_CANCEL , label: stateProjectMessage.canceled, color: '#CC0000' },
+    { value: STATE_PROJECT_FAILED , label: stateProjectMessage.failed, color: '#CC0000' },
 ];
 
 export const stateOptions = [

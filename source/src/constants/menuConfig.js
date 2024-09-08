@@ -32,4 +32,17 @@ export const navMenuConfig = [
             },
         ],
     },
+    {
+        label: <FormattedMessage defaultMessage="Quản lý dự án" />,
+        key: 'quan-ly-du-an',
+        icon: <IconSettings size={16} />,
+        permission: apiConfig.project.getList.baseURL,
+        children: [
+            {
+                label: <FormattedMessage defaultMessage="Dự án" />,
+                key: 'project',
+                path: routes.projectListPage.path,
+            },
+        ],
+    },
 ];
