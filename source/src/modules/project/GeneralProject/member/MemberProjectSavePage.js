@@ -1,28 +1,28 @@
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { categoryKind } from '@constants';
 import apiConfig from '@constants/apiConfig';
-import useFetch from '@hooks/useFetch';
 import useSaveBase from '@hooks/useSaveBase';
 import React, { useEffect } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
-import routes from './routes';
 import useTranslate from '@hooks/useTranslate';
-import ProjectForm from './ProjectForm';
+import { useLocation } from 'react-router-dom';
+import MemberProjectForm from './MemberProjectForm';
+import routes from '@modules/project/routes';
 
 const message = defineMessages({
-    objectName: 'project',
+    objectName: 'courses registration',
 });
 
-const ProjectSavePage = () => {
+const MemberProjectSavePage = () => {
     const translate = useTranslate();
+
     const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
         apiConfig: {
-            getById: apiConfig.project.getById,
-            create: apiConfig.project.create,
-            update: apiConfig.project.update,
+            getById: apiConfig.memberProject.getById,
+            create: apiConfig.memberProject.create,
+            update: apiConfig.memberProject.update,
         },
         options: {
-            getListUrl: routes.projectListPage.path,
+            getListUrl: routes.ProjectPage.path,
             objectName: translate.formatMessage(message.objectName),
         },
         override: (funcs) => {
@@ -42,13 +42,17 @@ const ProjectSavePage = () => {
     return (
         <PageWrapper
             loading={loading}
-            routes={[
-                { breadcrumbName: <FormattedMessage defaultMessage="Project" />, path: routes.projectListPage.path },
-                { breadcrumbName: title },
-            ]}
+            // routes={[
+            //     { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
+            //     {
+            //         breadcrumbName: translate.formatMessage(commonMessage.registrationCourse),
+            //         path: `course/registration${queryString}`,
+            //     },
+            //     { breadcrumbName: title },
+            // ]}
             title={title}
         >
-            <ProjectForm
+            <MemberProjectForm
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}
                 formId={mixinFuncs.getFormId()}
@@ -60,4 +64,4 @@ const ProjectSavePage = () => {
     );
 };
 
-export default ProjectSavePage;
+export default MemberProjectSavePage;

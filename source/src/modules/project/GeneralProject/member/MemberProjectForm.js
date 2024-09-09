@@ -1,20 +1,14 @@
-import { Button, Card, Checkbox, Col, Form, InputNumber, Row, Space, Table, TimePicker } from 'antd';
+import { Button, Card, Checkbox, Col, Form, Row, Space, Table, TimePicker } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
-import useFetch from '@hooks/useFetch';
 import apiConfig from '@constants/apiConfig';
-import SelectField from '@components/common/form/SelectField';
 import useTranslate from '@hooks/useTranslate';
 import { stateResgistration } from '@constants/masterData';
 import { FormattedMessage } from 'react-intl';
 import { BaseForm } from '@components/common/form/BaseForm';
 import AutoCompleteField from '@components/common/form/AutoCompleteField';
-import DatePickerField from '@components/common/form/DatePickerField';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT } from '@constants/index';
-import { formatDateString } from '@utils/index';
-import BaseTable from '@components/common/table/BaseTable';
 
 dayjs.extend(customParseFormat);
 
@@ -28,15 +22,7 @@ const DAYS_OF_WEEK = [
     { key: 'cn', label: 'Chủ Nhật' },
 ];
 
-const RegisterCourseForm = ({
-    formId,
-    actions,
-    dataDetail,
-    onSubmit,
-    setIsChangedFormValues,
-    categories,
-    isEditing,
-}) => {
+const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, isEditing }) => {
     const queryParams = new URLSearchParams(window.location.search);
     const courseId = queryParams.get('courseId');
     console.log('courseId', courseId);
@@ -48,6 +34,8 @@ const RegisterCourseForm = ({
         onSubmit,
         setIsChangedFormValues,
     });
+
+    const projectId = queryParams.get('projectId');
 
     const [scheduleData, setScheduleData] = useState(
         DAYS_OF_WEEK.map((day) => ({
@@ -65,12 +53,10 @@ const RegisterCourseForm = ({
         if (dataDetail) {
             form.setFieldsValue({
                 ...dataDetail,
-                studentId: dataDetail?.studentInfo?.id,
-                status: dataDetail?.studentInfo?.account?.status,
-                contractSign: 'contractSign',
-                isIntern: dataDetail?.isIntern,
-                state: dataDetail?.state,
-                courseId: dataDetail?.courseId,
+                isPaid: dataDetail?.isPaid,
+                status: dataDetail?.status,
+                developerId: dataDetail?.developer?.id,
+                projectRoleId: dataDetail?.projectRole?.id,
             });
 
             const schedule = dataDetail.schedule ? JSON.parse(dataDetail.schedule) : {};
@@ -172,31 +158,32 @@ const RegisterCourseForm = ({
         const scheduleJSON = JSON.stringify(scheduleObj);
         const finalValues = {
             ...values,
-            contractSign: 'contractSign',
-            courseId: courseId,
-            studentId: Number(values.studentId),
-            moneyState: 1,
-            isIssuedCertify: 1,
-            status: dataDetail?.studentInfo?.account?.status,
+            developerId: Number(values.developerId),
+            projectRoleId: Number(values.projectRoleId),
             schedule: scheduleJSON,
-            state: Number(values.state),
-            isIntern: Number(values.isIntern),
+            projectId: projectId,
+            state: 1,
+            status: 1,
+            isPaid: values.isPaid,
         };
-
         console.log('Form Values:', finalValues);
         return mixinFuncs.handleSubmit(finalValues);
     };
 
     const initialValues = {
-        isIntern: 0,
+        isPaid: false,
     };
 
     const handleCheckboxChange = (e) => {
-        form.setFieldsValue({ isIntern: e.target.checked ? 1 : 0 });
+        form.setFieldsValue({ isPaid: e.target.checked });
     };
 
-    const handleStudentIdChange = (value) => {
-        form.setFieldsValue({ studentId: value });
+    const handleDeveloperIdChange = (value) => {
+        form.setFieldsValue({ developerId: value });
+    };
+
+    const handleProjectRoleIdChange = (value) => {
+        form.setFieldsValue({ developerId: value });
     };
 
     const columns = [
@@ -283,30 +270,34 @@ const RegisterCourseForm = ({
                 <Row gutter={10}>
                     <Col span={12}>
                         <AutoCompleteField
-                            label={<FormattedMessage defaultMessage="Tên sinh viên" />}
-                            name={['studentId']}
-                            apiConfig={apiConfig.student.autocomplete}
+                            label={<FormattedMessage defaultMessage="Lập trình viên" />}
+                            name={['developerId']}
+                            apiConfig={apiConfig.developer.autocomplete}
                             mappingOptions={(item) => ({ value: item.id, label: item.account?.fullName })}
-                            initialSearchParams={{ courseId: courseId, ignoreRegistration: 'true' }}
+                            initialSearchParams={{ ignoreMemberProject: 'false', projectId: projectId }}
                             searchParams={(text) => ({ name: text })}
-                            onChange={handleStudentIdChange}
+                            onChange={handleDeveloperIdChange}
                             required
                             disabled={isEditing}
                         />
                     </Col>
                     <Col span={12}>
-                        <SelectField
+                        <AutoCompleteField
+                            label={<FormattedMessage defaultMessage="Vai trò" />}
+                            name={['projectRoleId']}
+                            apiConfig={apiConfig.projectRole.autocomplete}
+                            mappingOptions={(item) => ({ value: item.id, label: item.projectRoleName })}
+                            searchParams={(text) => ({ name: text })}
+                            onChange={handleProjectRoleIdChange}
                             required
-                            label={<FormattedMessage defaultMessage="Tình trạng" />}
-                            name="state"
-                            options={statusValues}
+                            disabled={isEditing}
                         />
                     </Col>
                 </Row>
                 <Row gutter={10}>
                     <Form.Item
-                        label={<FormattedMessage defaultMessage="Đăng kí thực tập" />}
-                        name="isIntern"
+                        label={<FormattedMessage defaultMessage="Được trả lương" />}
+                        name="isPaid"
                         valuePropName="checked"
                     >
                         <Checkbox onChange={handleCheckboxChange} />
@@ -327,4 +318,4 @@ const RegisterCourseForm = ({
     );
 };
 
-export default RegisterCourseForm;
+export default MemberProjectForm;

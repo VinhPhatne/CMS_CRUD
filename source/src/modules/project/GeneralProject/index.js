@@ -2,63 +2,51 @@ import PageWrapper from '@components/common/layout/PageWrapper';
 import useTranslate from '@hooks/useTranslate';
 import { Card, Tabs } from 'antd';
 import React, { useState } from 'react';
-import { defineMessages } from 'react-intl';
-import { settingGroups } from '@constants/masterData';
-import routes from '@routes';
-import GeneralProjectPage from './GeneralProjectPage';
-
-const message = defineMessages({
-    generalSetting: 'Cài đặt chung',
-    pageSetting: 'Cài đặt trang',
-    generalRevenue: 'Lợi nhuận chia sẻ',
-    trainingConfig: 'Cấu hình đào tạo',
-});
+import { defineMessages, useIntl } from 'react-intl';
+import StoryProject from './StoryProject';
+import MemberProject from './MemberProject';
+import { useLocation } from 'react-router-dom';
 
 const ProjectPage = () => {
     const translate = useTranslate();
-    const [activeTab, setActiveTab] = useState(
-        localStorage.getItem(routes.settingsPage.keyActiveTab)
-            ? localStorage.getItem(routes.settingsPage.keyActiveTab)
-            : settingGroups.PAGE,
-    );
+    const intl = useIntl();
+    const location = useLocation();
+
+    const { pathname: pagePath } = useLocation();
+
+    const queryParams = new URLSearchParams(location.search);
+    const projectId = queryParams.get('projectId');
+    // const [activeTab, setActiveTab] = useState(
+    //     localStorage.getItem(routes.settingsPage.keyActiveTab)
+    //         ? localStorage.getItem(routes.settingsPage.keyActiveTab)
+    //         : settingGroups.PAGE,
+    // );
+
+    //<PageWrapper routes={[{ breadcrumbName: translate.formatMessage(message.generalSetting) }]}>
+
+    const [activeTab, setActiveTab] = useState('story');
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(message.generalSetting) }]}>
+        <PageWrapper
+        //routes={[{ breadcrumbName: translate.formatMessage(message.objectName) }]}
+        >
             <Card className="card-form" bordered={false}>
                 <Tabs
                     type="card"
                     onTabClick={(key) => {
                         setActiveTab(key);
-                        localStorage.setItem(routes.settingsPage.keyActiveTab, key);
+                        //localStorage.setItem(routes.settingsPage.keyActiveTab, key);
                     }}
                     activeKey={activeTab}
                     items={[
                         {
-                            key: settingGroups.GENERAL,
-                            label: translate.formatMessage(message.generalSetting),
-                            children: activeTab == settingGroups.GENERAL && (
-                                <GeneralProjectPage groupName={settingGroups.GENERAL} />
-                            ),
+                            key: 'story',
+                            label: 'Story',
+                            children: <StoryProject projectId={projectId} />,
                         },
                         {
-                            key: settingGroups.PAGE,
-                            label: translate.formatMessage(message.pageSetting),
-                            children: activeTab == settingGroups.PAGE && (
-                                <GeneralProjectPage groupName={settingGroups.PAGE} />
-                            ),
-                        },
-                        {
-                            key: settingGroups.REVENUE,
-                            label: translate.formatMessage(message.generalRevenue),
-                            children: activeTab == settingGroups.REVENUE && (
-                                <GeneralProjectPage groupName={settingGroups.REVENUE} />
-                            ),
-                        },
-                        {
-                            key: settingGroups.TRAINING,
-                            label: translate.formatMessage(message.trainingConfig),
-                            children: activeTab == settingGroups.TRAINING && (
-                                <GeneralProjectPage groupName={settingGroups.TRAINING} />
-                            ),
+                            key: 'member',
+                            label: 'Member',
+                            children: <MemberProject />,
                         },
                     ]}
                 />
