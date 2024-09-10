@@ -2,6 +2,8 @@ import apiConfig from '@constants/apiConfig';
 import ProjectListPage from '.';
 import ProjectSavePage from './ProjectSavePage';
 import ProjectPage from './GeneralProject';
+import StoryProjectSavePage from './GeneralProject/story/StoryProjectSavePage';
+import MemberProjectSavePage from './GeneralProject/member/MemberProjectSavePage';
 
 export default {
     projectListPage: {
@@ -25,5 +27,21 @@ export default {
         component: ProjectPage,
         keyActiveTab: 'activeProjectTab',
         permissions: [apiConfig.project.getById.baseURL],
+    },
+    StoryProjectSavePage: {
+        path: '/story/task/:id',
+        title: 'Story Project Page',
+        auth: true,
+        component: StoryProjectSavePage,
+        keyActiveTab: 'activeProjectTab',
+        //permissions: [apiConfig.project.getById.baseURL],
+    },
+    MemberProjectSavePage: {
+        path: '/project/member/:id',
+        title: 'Story Project Page',
+        auth: true,
+        component: MemberProjectSavePage,
+        keyActiveTab: 'activeProjectTab',
+        //permissions: [apiConfig.project.getById.baseURL],
     },
 };

@@ -345,7 +345,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    courses : {
+    courses: {
         getList: {
             baseURL: `${apiTenantUrl}v1/course/list`,
             method: 'GET',
@@ -377,7 +377,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    subject : {
+    subject: {
         getList: {
             baseURL: `${apiTenantUrl}v1/subject/list`,
             method: 'GET',
@@ -414,9 +414,8 @@ const apiConfig = {
             headers: baseHeader,
             isRequiredTenantId: true,
         },
-        
     },
-    developer : {
+    developer: {
         getList: {
             baseURL: `${apiTenantUrl}v1/developer/list`,
             method: 'GET',
@@ -454,7 +453,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    registration : {
+    registration: {
         getList: {
             baseURL: `${apiTenantUrl}v1/registration/list`,
             method: 'GET',
@@ -486,7 +485,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    student : {
+    student: {
         getList: {
             baseURL: `${apiTenantUrl}v1/student/list`,
             method: 'GET',
@@ -524,7 +523,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    project : {
+    project: {
         getList: {
             baseURL: `${apiTenantUrl}v1/project/list`,
             method: 'GET',
@@ -562,7 +561,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    salaryPeriod : {
+    salaryPeriod: {
         getList: {
             baseURL: `${apiTenantUrl}v1/salary-period/list`,
             method: 'GET',
@@ -612,7 +611,7 @@ const apiConfig = {
             isRequiredTenantId: true,
         },
     },
-    registerSalaryPeriod : {
+    registerSalaryPeriod: {
         getList: {
             baseURL: `${apiTenantUrl}v1/register-salary-period/list`,
             method: 'GET',
@@ -645,6 +644,158 @@ const apiConfig = {
         },
         getNewSalaryPeriodDate: {
             baseURL: `${apiTenantUrl}v1/register-salary-period/new-salary-period-date/:projectId`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+    },
+    story: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/story/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/story/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/story/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/story/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/story/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        autocomplete: {
+            baseURL: `${apiTenantUrl}v1/story/auto-complete`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+    },
+    memberProject: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/member-project/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/member-project/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/member-project/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/member-project/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/member-project/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        autocomplete: {
+            baseURL: `${apiTenantUrl}v1/member-project/auto-complete`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+    },
+    documentTemplate: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/document-template/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/document-template/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/document-template/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/document-template/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/document-template/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        autocomplete: {
+            baseURL: `${apiTenantUrl}v1/document-template/auto-complete`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+    },
+    projectRole: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/project-role/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/project-role/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/project-role/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/project-role/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/project-role/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        autocomplete: {
+            baseURL: `${apiTenantUrl}v1/project-role/auto-complete`,
             method: 'GET',
             headers: baseHeader,
             isRequiredTenantId: true,

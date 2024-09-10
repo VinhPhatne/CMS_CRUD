@@ -1,4 +1,25 @@
-import { STATUS_ACTIVE, STATUS_INACTIVE, STATUS_PENDING,PROVINCE_KIND,DISTRICT_KIND,VILLAGE_KIND, REGISTRATION_STATE_REGISTER, REGISTRATION_STATE_LEARNING, REGISTRATION_STATE_FINISHED, REGISTRATION_STATE_CANCEL, STATE_COURSE_PREPARED, STATE_COURSE_STARTED, STATE_COURSE_FINISHED, STATE_COURSE_CANCELED, STATE_COURSE_RECRUITED, STATE_PROJECT_CREATE, STATE_PROJECT_RUNNING, STATE_PROJECT_DONE, STATE_PROJECT_CANCEL, STATE_PROJECT_FAILED } from '@constants';
+import {
+    STATUS_ACTIVE,
+    STATUS_INACTIVE,
+    STATUS_PENDING,
+    PROVINCE_KIND,
+    DISTRICT_KIND,
+    VILLAGE_KIND,
+    REGISTRATION_STATE_REGISTER,
+    REGISTRATION_STATE_LEARNING,
+    REGISTRATION_STATE_FINISHED,
+    REGISTRATION_STATE_CANCEL,
+    STATE_COURSE_PREPARED,
+    STATE_COURSE_STARTED,
+    STATE_COURSE_FINISHED,
+    STATE_COURSE_CANCELED,
+    STATE_COURSE_RECRUITED,
+    STATE_PROJECT_CREATE,
+    STATE_PROJECT_RUNNING,
+    STATE_PROJECT_DONE,
+    STATE_PROJECT_CANCEL,
+    STATE_PROJECT_FAILED,
+} from '@constants';
 import { defineMessages } from 'react-intl';
 import {
     nationKindMessage,
@@ -54,11 +75,11 @@ export const stateCourseOptions = [
 ];
 
 export const stateProjectOptions = [
-    { value: STATE_PROJECT_CREATE , label: stateProjectMessage.create, color: '#00A648' },
+    { value: STATE_PROJECT_CREATE, label: stateProjectMessage.create, color: '#00A648' },
     { value: STATE_PROJECT_RUNNING, label: stateProjectMessage.running, color: '#1890FF' },
-    { value: STATE_PROJECT_DONE , label: stateProjectMessage.done, color: '#CC0000' },
-    { value: STATE_PROJECT_CANCEL , label: stateProjectMessage.canceled, color: '#CC0000' },
-    { value: STATE_PROJECT_FAILED , label: stateProjectMessage.failed, color: '#CC0000' },
+    { value: STATE_PROJECT_DONE, label: stateProjectMessage.done, color: '#CC0000' },
+    { value: STATE_PROJECT_CANCEL, label: stateProjectMessage.canceled, color: '#CC0000' },
+    { value: STATE_PROJECT_FAILED, label: stateProjectMessage.failed, color: '#CC0000' },
 ];
 
 export const stateOptions = [
@@ -99,7 +120,6 @@ export const kindPost = [
         label: 'Story',
         color: 'blue',
     },
-   
 ];
 
 export const settingGroups = {
@@ -108,6 +128,14 @@ export const settingGroups = {
     REVENUE: 'revenue_config',
     TRAINING: 'training_config',
 };
+
+export const projectGroups = {
+    GENERAL: 'general',
+    STORY: 'story',
+    MEMBER: 'member',
+    CATEGORY: 'category',
+};
+
 export const dataTypeSetting = {
     INT: 'int',
     STRING: 'string',

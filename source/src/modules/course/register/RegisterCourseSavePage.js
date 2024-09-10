@@ -18,7 +18,7 @@ const message = defineMessages({
 
 const RegisterCourseSavePage = () => {
     const translate = useTranslate();
-    const location = useLocation(); 
+    const location = useLocation();
     const queryString = location.search;
     const params = new URLSearchParams(location.search);
     const courseId = params.get('courseId');
@@ -52,14 +52,18 @@ const RegisterCourseSavePage = () => {
         },
     });
     return (
-        <PageWrapper 
-            loading={loading} 
+        <PageWrapper
+            loading={loading}
             routes={[
                 { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
-                { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse), path: `course/registration${queryString}` },
+                {
+                    breadcrumbName: translate.formatMessage(commonMessage.registrationCourse),
+                    path: `course/registration${queryString}`,
+                },
                 { breadcrumbName: title },
-            ]}  
-            title={title}>
+            ]}
+            title={title}
+        >
             <RegisterCourseForm
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}
