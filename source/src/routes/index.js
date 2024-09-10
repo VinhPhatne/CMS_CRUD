@@ -12,6 +12,7 @@ import SettingListPage from '@modules/listSetting';
 import SettingSavePage from '@modules/listSetting/SettingSavePage';
 import settingsRoutes from '@modules/settings/routes';
 import coursesRoutes from '@modules/course/routes';
+import subjectsRoutes from '@modules/subject/routes';
 import projectRoutes from '@modules/project/routes';
 /*
 	auth
@@ -79,6 +80,7 @@ const routes = {
     ...nationRoutes,
     ...settingsRoutes,
     ...coursesRoutes,
+    ...subjectsRoutes,
     ...projectRoutes,
     // keep this at last
     notFound: {

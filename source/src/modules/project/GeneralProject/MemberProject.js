@@ -97,7 +97,7 @@ const MemberProject = ({ projectId }) => {
     const columnsStory = [
         {
             title: '#',
-            dataIndex: 'avatar',
+            dataIndex: ['developer', 'accountDto', 'avatar'],
             align: 'center',
             width: 100,
             render: (avatar) => (
@@ -111,52 +111,35 @@ const MemberProject = ({ projectId }) => {
         {
             title: <FormattedMessage defaultMessage="Họ và tên" />,
             dataIndex: ['developer', 'accountDto', 'fullName'],
-            width: 300,
+            width: 550,
         },
         {
             title: <FormattedMessage defaultMessage="Vai trò" />,
             dataIndex: ['projectRole', 'projectRoleName'],
-            width: 300,
+            width: 200,
+            align: 'center',
         },
         {
-            title: <FormattedMessage defaultMessage="Có lương" />,
-            width: 80,
-            dataIndex: 'state',
-            render: (state) => {
-                const stateOption = stateProjectOptions.find((option) => option.value === state);
-                return stateOption ? (
-                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
+            title: <FormattedMessage defaultMessage="Trả lương" />,
+            width: 100,
+            dataIndex: 'isPaid',
+            align: 'center',
+            render: (isPaid) => {
+                return isPaid ? (
+                    <Tag color="green">
+                        <FormattedMessage defaultMessage="Có trả lương" />
+                    </Tag>
                 ) : (
-                    <FormattedMessage defaultMessage="Không xác định" />
-                );
-            },
-        },
-        {
-            title: <FormattedMessage defaultMessage="Ngày tạo" />,
-            width: 250,
-            dataIndex: 'createdDate',
-            align: 'right',
-            render: (createdDate) => {
-                const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
-                return <div>{createdDateLocal}</div>;
-            },
-        },
-        {
-            title: <FormattedMessage defaultMessage="Tình trạng" />,
-            width: 80,
-            dataIndex: 'state',
-            render: (state) => {
-                const stateOption = stateProjectOptions.find((option) => option.value === state);
-                return stateOption ? (
-                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-                ) : (
-                    <FormattedMessage defaultMessage="Không xác định" />
+                    <Tag color="yellow">
+                        <FormattedMessage defaultMessage="Không trả lương" />
+                    </Tag>
                 );
             },
         },
         {
             title: 'Lịch trình',
             dataIndex: 'schedule',
+            align: 'center',
             render: (scheduleData) => {
                 let parsedSchedule = {};
                 try {
@@ -223,22 +206,6 @@ const MemberProject = ({ projectId }) => {
         ),
     ];
 
-    const searchFields = [
-        {
-            key: 'developerId',
-            type: FieldTypes.SELECT,
-            placeholder: translate.formatMessage(commonMessage.nameCourses),
-            options: autoCompleteOptions,
-            loading: autoCompleteLoading,
-        },
-        {
-            key: 'status',
-            placeholder: translate.formatMessage(commonMessage.status),
-            type: FieldTypes.SELECT,
-            options: stateValues,
-        },
-    ];
-
     const handleSearch = (values) => {
         const params = new URLSearchParams(location.search);
         params.set('developerId', values.developerId || '');
@@ -247,10 +214,9 @@ const MemberProject = ({ projectId }) => {
     };
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: 'story' }]}>
+        <>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({
-                    fields: searchFields,
                     initialValues: queryFilter,
                     onSearch: handleSearch,
                 })}
@@ -264,7 +230,7 @@ const MemberProject = ({ projectId }) => {
                     />
                 }
             />
-        </PageWrapper>
+        </>
     );
 };
 

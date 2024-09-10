@@ -18,6 +18,16 @@ const message = defineMessages({
 
 const StoryProjectSavePage = () => {
     const translate = useTranslate();
+    const location = useLocation();
+    const queryString = location.search;
+    const params = new URLSearchParams(location.search);
+    const { pathname: pagePath } = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const projectName = queryParams.get('projectName');
+    const projectId = queryParams.get('projectId');
+
+    console.log('projectId', projectId);
+    console.log('projectName', projectName);
 
     const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
         apiConfig: {
@@ -54,6 +64,14 @@ const StoryProjectSavePage = () => {
             //     },
             //     { breadcrumbName: title },
             // ]}
+            routes={[
+                { breadcrumbName: 'Dự án', path: routes.ProjectPage.path },
+                {
+                    breadcrumbName: projectName,
+                    path: `/project/project-tab${queryString}`,
+                },
+                { breadcrumbName: title },
+            ]}
             title={title}
         >
             <StoryProjectForm

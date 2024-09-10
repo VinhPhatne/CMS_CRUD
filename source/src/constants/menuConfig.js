@@ -30,6 +30,11 @@ export const navMenuConfig = [
                 key: 'course',
                 path: routes.coursesPage.path,
             },
+            {
+                label: <FormattedMessage defaultMessage="Môn học" />,
+                key: 'subject',
+                path: routes.SubjectListPage.path,
+            },
         ],
     },
     {

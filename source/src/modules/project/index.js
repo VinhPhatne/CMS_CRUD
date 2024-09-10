@@ -26,12 +26,13 @@ import { BaseForm } from '@components/common/form/BaseForm';
 import useDisclosure from '@hooks/useDisclosure';
 import { useForm } from 'antd/es/form/Form';
 import { formatDateString } from '@utils/index';
+import { convertUtcToLocalTime } from '@utils';
 
 dayjs.extend(utc);
 dayjs.extend(localizedFormat);
 
 const message = defineMessages({
-    objectName: 'Dự Án',
+    objectName: 'Dự án',
 });
 
 const ProjectListPage = () => {
@@ -46,10 +47,6 @@ const ProjectListPage = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [form] = useForm();
-
-    const convertUtcToLocalTime = (utcDate, format) => {
-        return dayjs.utc(utcDate).local().format(format);
-    };
 
     const { loading: fetchingDate, execute: fetchSalaryPeriodDate } = useFetch(
         apiConfig.registerSalaryPeriod.getNewSalaryPeriodDate,
@@ -195,7 +192,7 @@ const ProjectListPage = () => {
             title: '#',
             dataIndex: 'index',
             align: 'center',
-            width: 80,
+            width: 40,
             render: (text, record, index) => index + 1,
         },
         {
@@ -263,14 +260,14 @@ const ProjectListPage = () => {
             },
         },
 
-        mixinFuncs.renderStatusColumn({ width: '90px' }),
+        //mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
                 salary: true,
                 edit: true,
                 delete: true,
             },
-            { width: '130px' },
+            { width: '180px' },
         ),
     ];
 

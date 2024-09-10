@@ -16,24 +16,24 @@ import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { stateCourseOptions } from '@constants/masterData';
 const message = defineMessages({
-    objectName: 'course',
+    objectName: 'subject',
 });
 
-const CourseListPage = () => {
+const SubjectListPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
     const notification = useNotification();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.courses.update);
+    const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.subject.update);
 
     const { formatMessage } = useIntl();
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
-        apiConfig: apiConfig.courses,
+        apiConfig: apiConfig.subject,
         options: {
             pageSize: DEFAULT_TABLE_ITEM_SIZE,
             objectName: translate.formatMessage(message.objectName),
@@ -46,28 +46,6 @@ const CourseListPage = () => {
                         total: response.data.totalElements,
                     };
                 }
-            };
-            funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
-                return {
-                    registration: ({ id, name, state, status }) => {
-                        return (
-                            <Button
-                                type="link"
-                                style={{ padding: 0 }}
-                                onClick={() => {
-                                    navigate(
-                                        `/course/registration?courseId=${id}&courseName=${encodeURIComponent(
-                                            name,
-                                        )}&courseState=${state}&courseStatus=${status}`,
-                                    );
-                                }}
-                            >
-                                <UsergroupDeleteOutlined />
-                            </Button>
-                        );
-                    },
-                };
             };
         },
     });
@@ -88,66 +66,38 @@ const CourseListPage = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: '#',
-            dataIndex: 'avatar',
-            align: 'center',
-            width: 70,
-            render: (avatar) => (
-                <AvatarField
-                    size="large"
-                    icon={<UserOutlined />}
-                    src={avatar ? `${AppConstants.contentRootUrl}${avatar}` : null}
-                />
-            ),
-        },
-        { title: <FormattedMessage defaultMessage="Tên Khóa Học" />, dataIndex: 'name', width: 200 },
-        {
             title: <FormattedMessage defaultMessage="Tên môn học" />,
+            dataIndex: 'subjectName',
+            render: (subjectName, record) => {
+                console.log(record);
+                return (
+                    <Link
+                        to={`/subject/lecture/${record.id}/?subjectName=${record.subjectName}`}
+                        // to={`/subject/lecture/${record.id}`}
+                    >
+                        {subjectName}
+                    </Link>
+                );
+            },
+        },
+        {
+            title: <FormattedMessage defaultMessage="Mã môn học" />,
             width: 300,
-            dataIndex: ['subject', 'subjectName'],
-            render: (subjectName, record) => (
-                <div>
-                    <div>{record.subject?.subjectName}</div>
-                    <div>{record.leader?.account?.fullName}</div>
-                </div>
-            ),
+            dataIndex: 'subjectCode',
         },
         {
-            title: <FormattedMessage defaultMessage="Học phí" />,
-            dataIndex: 'fee',
-            align: 'right',
-            render: (fee) => formatMoney(fee),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
+            title: <FormattedMessage defaultMessage="Ngày tạo" />,
             width: 180,
-            dataIndex: 'dateEnd',
+            dataIndex: 'createdDate',
             align: 'right',
             render: (createdDate) => {
                 const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
                 return <div>{createdDateLocal}</div>;
             },
         },
-        {
-            title: <FormattedMessage id="courseListPage.status" defaultMessage="Trạng thái" />,
-            width: 180,
-            dataIndex: 'state',
-            align: 'right',
-            // render: (state) => {
-            //     const stateOption = stateCourseOptions.find((option) => option.value === state);
-            //     return stateOption ? (
-            //         <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-            //     ) : (
-            //         <FormattedMessage id="courseListPage.unknownStatus" defaultMessage="Không xác định" />
-            //     );
-            // },
-        },
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
-                registration: {
-                    permissions: apiConfig.courses.getById.baseURL,
-                },
                 edit: true,
                 delete: true,
             },
@@ -186,4 +136,4 @@ const CourseListPage = () => {
     );
 };
 
-export default CourseListPage;
+export default SubjectListPage;
