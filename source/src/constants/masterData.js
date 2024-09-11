@@ -75,8 +75,8 @@ export const stateCourseOptions = [
 ];
 
 export const stateProjectOptions = [
-    { value: STATE_PROJECT_CREATE, label: stateProjectMessage.create, color: '#00A648' },
-    { value: STATE_PROJECT_RUNNING, label: stateProjectMessage.running, color: '#1890FF' },
+    { value: STATE_PROJECT_CREATE, label: stateProjectMessage.create, color: 'yellow' },
+    { value: STATE_PROJECT_RUNNING, label: stateProjectMessage.running, color: 'blue' },
     { value: STATE_PROJECT_DONE, label: stateProjectMessage.done, color: '#CC0000' },
     { value: STATE_PROJECT_CANCEL, label: stateProjectMessage.canceled, color: '#CC0000' },
     { value: STATE_PROJECT_FAILED, label: stateProjectMessage.failed, color: '#CC0000' },

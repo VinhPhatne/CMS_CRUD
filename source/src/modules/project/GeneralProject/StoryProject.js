@@ -13,7 +13,7 @@ import { stateProjectOptions, statusOptions } from '@constants/masterData';
 import PageWrapper from '@components/common/layout/PageWrapper';
 import ListPage from '@components/common/layout/ListPage';
 import useFetch from '@hooks/useFetch';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const messages = defineMessages({
     objectName: {
@@ -27,6 +27,7 @@ const StoryProject = ({ projectId }) => {
     const intl = useIntl();
 
     const location = useLocation();
+    const navigate = useNavigate();
     const stateValues = translate.formatKeys(stateProjectOptions, ['label']);
 
     const {
@@ -107,14 +108,17 @@ const StoryProject = ({ projectId }) => {
 
         {
             title: <FormattedMessage defaultMessage="Tình trạng" />,
-            width: 80,
+            width: 100,
             dataIndex: 'state',
             render: (state) => {
                 const stateOption = stateProjectOptions.find((option) => option.value === state);
+
                 return stateOption ? (
                     <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
                 ) : (
-                    <FormattedMessage defaultMessage="Không xác định" />
+                    <Tag color="default">
+                        <FormattedMessage defaultMessage="Không xác định" />
+                    </Tag>
                 );
             },
         },
@@ -149,11 +153,19 @@ const StoryProject = ({ projectId }) => {
         const params = new URLSearchParams(location.search);
         params.set('developerId', values.developerId || '');
         params.set('status', values.status || '');
-        history.push({ search: params.toString() });
+        navigate({ search: params.toString() });
     };
 
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const developerId = params.get('developerId');
+        const status = params.get('status');
+
+        mixinFuncs.getList({ developerId, status });
+    }, [location.search]);
+
     return (
-        <PageWrapper routes={[{ breadcrumbName: 'story' }]}>
+        <>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({
                     fields: searchFields,
@@ -170,7 +182,7 @@ const StoryProject = ({ projectId }) => {
                     />
                 }
             />
-        </PageWrapper>
+        </>
     );
 };
 
