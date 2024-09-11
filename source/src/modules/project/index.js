@@ -41,7 +41,7 @@ const ProjectListPage = () => {
     const notification = useNotification();
 
     const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [projectId, setProjectId] = useState(null);
     const [salary, setSalary] = useState();
     const [isOpen, { open, close }] = useDisclosure();
     const [isEditing, setIsEditing] = useState(false);
@@ -70,7 +70,7 @@ const ProjectListPage = () => {
         dueDate != null ? setIsEditing(true) : setIsEditing(false);
         registerSalaryId != null ? setSalary(registerSalaryId) : null;
 
-        setSelectedProject(id);
+        setProjectId(id);
         try {
             const result = await fetchSalaryPeriodDate({
                 pathParams: { projectId: id },
@@ -107,7 +107,7 @@ const ProjectListPage = () => {
         if (!isEditing) {
             const dataCreate = {
                 ...values,
-                selectedProject,
+                projectId,
             };
             try {
                 await registerSalary({
@@ -134,8 +134,8 @@ const ProjectListPage = () => {
                     method: 'PUT',
                     data: dataUpdate,
                     onCompleted: (response) => {
-                        window.location.reload();
                         close();
+                        mixinFuncs.handleFetchList();
                     },
                     onError: (error) => {
                         console.error('Error creating task:', error);

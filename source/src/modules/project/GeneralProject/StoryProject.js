@@ -156,6 +156,18 @@ const StoryProject = ({ projectId }) => {
         navigate({ search: params.toString() });
     };
 
+    const handleReset = (values) => {
+        const params = new URLSearchParams(location.search);
+
+        if (params.has('developerId')) {
+            params.delete('developerId');
+        }
+        if (params.has('status')) {
+            params.delete('status');
+        }
+        navigate({ search: params.toString() });
+    };
+
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const developerId = params.get('developerId');
@@ -171,6 +183,7 @@ const StoryProject = ({ projectId }) => {
                     fields: searchFields,
                     initialValues: queryFilter,
                     onSearch: handleSearch,
+                    onReset: handleReset,
                 })}
                 actionBar={mixinFuncs.renderActionBar()}
                 baseTable={

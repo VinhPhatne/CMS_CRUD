@@ -24,18 +24,14 @@ const DAYS_OF_WEEK = [
 
 const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, isEditing }) => {
     const queryParams = new URLSearchParams(window.location.search);
-    const courseId = queryParams.get('courseId');
-    console.log('courseId', courseId);
+    const projectId = queryParams.get('projectId');
 
-    const translate = useTranslate();
-    const statusValues = translate.formatKeys(stateResgistration, ['label']);
+    const [isFormChanged, setIsFormChanged] = useState(false);
 
     const { form, mixinFuncs, onValuesChange } = useBasicForm({
         onSubmit,
         setIsChangedFormValues,
     });
-
-    const projectId = queryParams.get('projectId');
 
     const [scheduleData, setScheduleData] = useState(
         DAYS_OF_WEEK.map((day) => ({
@@ -106,6 +102,7 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
         });
         setScheduleData(newScheduleData);
         form.setFieldsValue({ schedule: JSON.stringify(newScheduleData) });
+        setIsChangedFormValues(true);
     };
 
     const handleReload = (day) => {
@@ -164,7 +161,7 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
             projectId: projectId,
             state: 1,
             status: 1,
-            isPaid: values.isPaid,
+            isPaid: values.isPaid ? 1 : 0,
         };
         console.log('Form Values:', finalValues);
         return mixinFuncs.handleSubmit(finalValues);
@@ -176,14 +173,6 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
 
     const handleCheckboxChange = (e) => {
         form.setFieldsValue({ isPaid: e.target.checked });
-    };
-
-    const handleDeveloperIdChange = (value) => {
-        form.setFieldsValue({ developerId: value });
-    };
-
-    const handleProjectRoleIdChange = (value) => {
-        form.setFieldsValue({ developerId: value });
     };
 
     const columns = [
@@ -274,9 +263,8 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
                             name={['developerId']}
                             apiConfig={apiConfig.developer.autocomplete}
                             mappingOptions={(item) => ({ value: item.id, label: item.account?.fullName })}
-                            initialSearchParams={{ ignoreMemberProject: 'false', projectId: projectId }}
+                            initialSearchParams={{ ignoreMemberProject: 'true', projectId: projectId }}
                             searchParams={(text) => ({ name: text })}
-                            onChange={handleDeveloperIdChange}
                             required
                             disabled={isEditing}
                         />
@@ -287,8 +275,6 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
                             name={['projectRoleId']}
                             apiConfig={apiConfig.projectRole.autocomplete}
                             mappingOptions={(item) => ({ value: item.id, label: item.projectRoleName })}
-                            searchParams={(text) => ({ name: text })}
-                            onChange={handleProjectRoleIdChange}
                             required
                             disabled={isEditing}
                         />

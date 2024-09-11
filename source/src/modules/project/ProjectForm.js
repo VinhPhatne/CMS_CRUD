@@ -54,7 +54,7 @@ const ProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
     const handleSubmit = (values) => {
         values.startDate = dayjs().format(DEFAULT_FORMAT);
         values.endDate = formatDateString(values.endDate, DEFAULT_FORMAT);
-        return mixinFuncs.handleSubmit({ ...values });
+        return mixinFuncs.handleSubmit({ ...values, avatar: avatarUrl });
     };
 
     useEffect(() => {

@@ -1,20 +1,22 @@
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { categoryKind } from '@constants';
 import apiConfig from '@constants/apiConfig';
-import useFetch from '@hooks/useFetch';
 import useSaveBase from '@hooks/useSaveBase';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import useTranslate from '@hooks/useTranslate';
 import LectureForm from './LectureForm';
 import routes from '../routes';
+import { generatePath, useParams } from 'react-router-dom';
 
 const message = defineMessages({
-    objectName: 'subjects',
+    objectName: 'lecture',
 });
 
 const LectureSavePage = () => {
     const translate = useTranslate();
+
+    const { subjectId: subjectId } = useParams();
+
     const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
         apiConfig: {
             getById: apiConfig.lecture.getById,
@@ -22,7 +24,7 @@ const LectureSavePage = () => {
             update: apiConfig.lecture.update,
         },
         options: {
-            getListUrl: routes.LectureListPage.path,
+            getListUrl: generatePath(routes.LectureListPage.path, { id: subjectId }),
             objectName: translate.formatMessage(message.objectName),
         },
         override: (funcs) => {
@@ -43,7 +45,11 @@ const LectureSavePage = () => {
         <PageWrapper
             loading={loading}
             routes={[
-                { breadcrumbName: <FormattedMessage defaultMessage="Bài giảng" />, path: routes.SubjectListPage.path },
+                { breadcrumbName: <FormattedMessage defaultMessage="Subject" />, path: routes.SubjectListPage.path },
+                {
+                    breadcrumbName: <FormattedMessage defaultMessage="Lecture" />,
+                    path: generatePath(routes.LectureListPage.path, { id: subjectId }),
+                },
                 { breadcrumbName: title },
             ]}
             title={title}

@@ -24,11 +24,13 @@ export default {
         title: 'Lecture Page',
         auth: true,
         component: LectureListPage,
+        permissions: [apiConfig.lecture.getList.baseURL],
     },
-    registerSavePage: {
+    LectureSavePage: {
         path: '/subject/lecture/:subjectId/:id',
         title: 'Lecture Save Page',
         auth: true,
         component: LectureSavePage,
+        permissions: [apiConfig.lecture.create.baseURL, apiConfig.lecture.update.baseURL],
     },
 };
