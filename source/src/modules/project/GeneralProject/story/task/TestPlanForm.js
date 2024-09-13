@@ -1,5 +1,5 @@
-import { Card, Col, Form, InputNumber, Row, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Card, Col, Row } from 'antd';
+import React, { useEffect } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
 import TextField from '@components/common/form/TextField';
 import SelectField from '@components/common/form/SelectField';
@@ -12,9 +12,11 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
-const SubjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, isEditing }) => {
+const TestPlanForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, isEditing }) => {
     const translate = useTranslate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
+    const queryParams = new URLSearchParams(window.location.search);
+    const storyId = queryParams.get('storyId');
 
     const { form, mixinFuncs, onValuesChange } = useBasicForm({
         onSubmit,
@@ -22,6 +24,7 @@ const SubjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
     });
 
     const handleSubmit = (values) => {
+        values.storyId = storyId;
         return mixinFuncs.handleSubmit({ ...values });
     };
 
@@ -44,25 +47,14 @@ const SubjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
             <Card className="card-form" bordered={false}>
                 <Row gutter={10}>
                     <Col span={12}>
-                        <TextField
-                            required
-                            label={<FormattedMessage defaultMessage="Tên môn học" />}
-                            name="subjectName"
-                        />
+                        <TextField required label={<FormattedMessage defaultMessage="Tên test plan" />} name="name" />
                     </Col>
-                    <Col span={12}>
-                        <TextField
-                            required
-                            label={<FormattedMessage defaultMessage="Mã môn học" />}
-                            name="subjectCode"
-                        />
-                    </Col>
-                </Row>
-                <Row gutter={24}>
                     <Col span={12}>
                         <SelectField
-                            label={<FormattedMessage defaultMessage="Trạng thái" />}
+                            required
+                            label={<FormattedMessage defaultMessage="Status" />}
                             name="status"
+                            disabled={true}
                             options={statusValues}
                         />
                     </Col>
@@ -73,4 +65,4 @@ const SubjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
     );
 };
 
-export default SubjectForm;
+export default TestPlanForm;

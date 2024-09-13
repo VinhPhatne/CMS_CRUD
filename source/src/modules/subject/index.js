@@ -24,13 +24,7 @@ const message = defineMessages({
 
 const SubjectListPage = () => {
     const translate = useTranslate();
-    const navigate = useNavigate();
-    const notification = useNotification();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.subject.update);
-
-    const { formatMessage } = useIntl();
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.subject,
@@ -50,20 +44,16 @@ const SubjectListPage = () => {
         },
     });
 
-    const formatMoney = (amount) => {
-        if (isNaN(amount)) {
-            return 'Invalid amount';
-        }
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
-
     const columns = [
         {
             title: '#',
             dataIndex: 'index',
             align: 'center',
             width: 40,
-            render: (text, record, index) => index + 1,
+            render: (text, record, index) => {
+                const { current, pageSize } = pagination;
+                return (current - 1) * pageSize + index + 1;
+            },
         },
         {
             title: <FormattedMessage defaultMessage="Tên môn học" />,
@@ -124,6 +114,7 @@ const SubjectListPage = () => {
                         columns={columns}
                         dataSource={data}
                         pagination={pagination}
+                        rowKey={(record) => record.id}
                     />
                 }
             />

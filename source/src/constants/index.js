@@ -136,6 +136,15 @@ export const STATE_PROJECT_DONE = 3;
 export const STATE_PROJECT_CANCEL = 4;
 export const STATE_PROJECT_FAILED = 5;
 
+export const STATE_TASK_CREATE = 1;
+export const STATE_TASK_RUNNING = 2;
+export const STATE_TASK_CANCEL = 3;
+export const STATE_TASK_TEST = 4;
+
+export const TASK_KIND_FEATURE = 1;
+export const TASK_KIND_BUG = 2;
+export const TASK_KIND_TESTCASE = 3;
+
 export const groupPermissionKindsOptions = [
     { label: 'Admin', value: GROUP_KIND_ADMIN },
     { label: 'Manager', value: GROUP_KIND_MANAGER },

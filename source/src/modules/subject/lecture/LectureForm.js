@@ -36,7 +36,6 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
     });
 
     useEffect(() => {
-        // Parse URL to get nextOrdering
         const queryParams = new URLSearchParams(location.search);
         const ordering = queryParams.get('nextOrdering');
         setNextOrdering(ordering ? parseInt(ordering, 10) : null);
@@ -62,6 +61,7 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
     });
 
     console.log('nextOrdering', nextOrdering);
+    console.log('itemssssssssssss', items);
 
     const handleSubmit = async (values) => {
         values.status = 1;
@@ -69,9 +69,17 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
         const id = `${Date.now()}`;
         values.id = id;
 
-        const newOrdering =
-            nextOrdering !== null ? nextOrdering : items.length > 0 ? items[items.length - 1].ordering + 1 : 1;
+        const validItemsLength = Array.isArray(items) ? items.length : 0;
+        console.log("validItemsLength: " + validItemsLength);
 
+        const newOrdering =
+            nextOrdering !== null && !isNaN(nextOrdering)
+                ? nextOrdering
+                : validItemsLength > 0
+                    ? validItemsLength + 1  
+                    : 0;  
+
+        console.log("newOrdering: " + newOrdering);
         values.ordering = newOrdering;
 
         const updatedItems = items.map((item) => {
@@ -144,6 +152,7 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
                                     required
                                     name="description"
                                     type="textarea"
+                                    style={{ height: '550px', marginBottom: '70px' }}
                                 />
                             </Col>
                         </Row>

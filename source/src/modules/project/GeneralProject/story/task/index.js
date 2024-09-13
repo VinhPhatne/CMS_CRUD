@@ -3,53 +3,42 @@ import useTranslate from '@hooks/useTranslate';
 import { Card, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import StoryProject from './StoryProject';
-import MemberProject from './MemberProject';
 import { useLocation, useNavigate } from 'react-router-dom';
-import routes from '../routes';
+import Task from './Task';
+import TestPlan from './TestPlan';
+import routes from '@modules/project/routes';
 
-const ProjectPage = () => {
-    const translate = useTranslate();
-    const intl = useIntl();
+const ProjectTaskPage = () => {
     const location = useLocation();
-
     const queryParams = new URLSearchParams(location.search);
     const projectName = queryParams.get('projectName');
     const projectId = queryParams.get('projectId');
-    const [activeTab, setActiveTab] = useState('story');
-
-    const navigate = useNavigate();
+    const storyName = queryParams.get('storyName');
+    const [activeTab, setActiveTab] = useState('task');
 
     const handleTabClick = (key) => {
         setActiveTab(key);
-        const params = new URLSearchParams(location.search);
-        localStorage.setItem(routes.ProjectPage.keyActiveTab, key);
-
-        if (key === 'member') {
-            params.delete('developerId');
-            params.delete('status');
-        }
-        navigate({ search: params.toString() });
+        localStorage.setItem(routes.ProjectTaskPage.keyActiveTab, key);
     };
 
     useEffect(() => {
-        const savedTab = localStorage.getItem(routes.ProjectPage.keyActiveTab);
+        const savedTab = queryParams.get('activeTab') || localStorage.getItem(routes.ProjectTaskPage.keyActiveTab);
         if (savedTab) {
             setActiveTab(savedTab);
         } else {
-            setActiveTab('story'); 
+            setActiveTab('task'); 
         }
     }, [location.search]);
-
-    useEffect(() => {
-        localStorage.setItem(routes.ProjectPage.keyActiveTab, activeTab);
-    }, [activeTab]);
-
+    
     return (
         <PageWrapper
             routes={[
                 { breadcrumbName: <FormattedMessage defaultMessage="Project" />, path: routes.projectListPage.path },
-                { breadcrumbName: projectName },
+                {
+                    breadcrumbName: projectName,
+                    path: `/project/project-tab?projectId=${projectId}&projectName=${projectName}&active=true`,
+                },
+                { breadcrumbName: storyName },
             ]}
         >
             <Card className="card-form" bordered={false}>
@@ -59,14 +48,14 @@ const ProjectPage = () => {
                     activeKey={activeTab}
                     items={[
                         {
-                            key: 'story',
-                            label: 'Story',
-                            children: <StoryProject projectId={projectId} activeTab={activeTab} />,
+                            key: 'task',
+                            label: 'Task',
+                            children: <Task projectId={projectId} />,
                         },
                         {
-                            key: 'member',
-                            label: 'Member',
-                            children: <MemberProject activeTab={activeTab} />,
+                            key: 'testPlan',
+                            label: 'Test Plan',
+                            children: <TestPlan />,
                         },
                     ]}
                 />
@@ -75,4 +64,4 @@ const ProjectPage = () => {
     );
 };
 
-export default ProjectPage;
+export default ProjectTaskPage;

@@ -4,29 +4,23 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import useTranslate from '@hooks/useTranslate';
 import { Button, Tag } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import BaseTable from '@components/common/table/BaseTable';
 import { convertUtcToLocalTime } from '@utils';
-import { AppConstants, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
+import { AppConstants, categoryKind, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
 import { commonMessage } from '@locales/intl';
-import { FieldTypes } from '@constants/formConfig';
 import { stateProjectOptions, statusOptions } from '@constants/masterData';
 import ListPage from '@components/common/layout/ListPage';
 import useFetch from '@hooks/useFetch';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-
-const StoryProject = ({ projectId, activeTab }) => {
+const TestPlan = ({ projectId }) => {
     const translate = useTranslate();
 
     const location = useLocation();
     const navigate = useNavigate();
-    const stateValues = translate.formatKeys(stateProjectOptions, ['label']);
-    const [searchValues, setSearchValues] = useState({});
-
-    const storageKey = `searchValues_${activeTab}`;
 
     const {
-        loading: autoCompleteLoading,
         execute: fetchAutoCompleteData,
         data: autoCompleteData,
     } = useFetch(apiConfig.memberProject.autocomplete, {
@@ -53,7 +47,7 @@ const StoryProject = ({ projectId, activeTab }) => {
     }, [autoCompleteData]);
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
-        apiConfig: apiConfig.story,
+        apiConfig: apiConfig.testPlan,
         options: {
             pageSize: DEFAULT_TABLE_ITEM_SIZE,
         },
@@ -68,40 +62,35 @@ const StoryProject = ({ projectId, activeTab }) => {
             };
             funcs.getItemDetailLink = (dataRow) => {
                 const searchParams = new URLSearchParams(window.location.search);
-                return `/story/task/${dataRow.id}?${searchParams.toString()}`;
+                return `/project/test-plan/${dataRow.id}?${searchParams.toString()}`;
             };
 
             funcs.getCreateLink = () => {
                 const searchParams = new URLSearchParams(window.location.search);
-                return `/story/task/create?${searchParams.toString()}`;
+                return `/project/test-plan/create?${searchParams.toString()}`;
             };
         },
     });
 
     const columnsStory = [
         {
-            title: <FormattedMessage defaultMessage="Tên story" />,
-            dataIndex: 'storyName',
-            width: 300,
-            render: (name, record) => {
-                const params = new URLSearchParams(location.search);
-                const projectId = params.get('projectId');
-                const projectName = encodeURIComponent(params.get('projectName'));
-                const storyId = record.id;
-                const storyName = encodeURIComponent(name);
-                const url = `/project/task?projectId=${projectId}&storyId=${storyId}&storyName=${storyName}&active=true&projectName=${projectName}`;
-                return <a onClick={() => navigate(url)}>{name}</a>;
+            title: '#',
+            dataIndex: 'index',
+            align: 'center',
+            width: 40,
+            render: (text, record, index) => {
+                const { current, pageSize } = pagination; 
+                return (current - 1) * pageSize + index + 1;
             },
         },
-
         {
-            title: <FormattedMessage defaultMessage="Người thực hiện" />,
-            dataIndex: ['developerInfo', 'account', 'fullName'],
-            width: 300,
+            title: <FormattedMessage defaultMessage="Test Plan" />,
+            dataIndex: 'name',
+            width: 400,
         },
         {
             title: <FormattedMessage defaultMessage="Ngày tạo" />,
-            width: 250,
+            width: 400,
             dataIndex: 'createdDate',
             align: 'right',
             render: (createdDate) => {
@@ -109,90 +98,108 @@ const StoryProject = ({ projectId, activeTab }) => {
                 return <div>{createdDateLocal}</div>;
             },
         },
-
         {
-            title: <FormattedMessage defaultMessage="Tình trạng" />,
-            width: 100,
-            dataIndex: 'state',
-            render: (state) => {
-                const stateOption = stateProjectOptions.find((option) => option.value === state);
-
-                return stateOption ? (
-                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-                ) : (
-                    <Tag color="default">
-                        <FormattedMessage defaultMessage="Không xác định" />
-                    </Tag>
-                );
+            title: <FormattedMessage defaultMessage="Đạt" />,
+            dataIndex: 'totalTestCasePassed',
+            width: 200,
+            align: 'center',
+            render: (value) => value || 0,
+        },
+        {
+            title: <FormattedMessage defaultMessage="Không đạt" />,
+            dataIndex: 'totalTestCaseFailed',
+            width: 200,
+            align: 'center',
+            render: (value) => (
+                <span style={{ color: 'red' }}>
+                    {value || 0}
+                </span>
+            ),
+        },
+        {
+            title: <FormattedMessage defaultMessage="Tổng" />,
+            dataIndex: 'totalTestCase',
+            width: 200,
+            align: 'center',
+            render: (value) => value || 0,
+        },
+        {
+            title: <FormattedMessage defaultMessage="Kết quả" />,
+            dataIndex: 'totalTestCase',
+            width: 200,
+            align: 'center',
+            render: (text, record) => {
+                if (record.totalTestCaseFailed) {
+                    return <span style={{ color: 'red' }}>X</span>;
+                } else {
+                    return <span style={{ color: 'grey' }}>__</span>;
+                }
             },
         },
-
+        mixinFuncs.renderStatusColumn(),
         mixinFuncs.renderActionColumn(
             {
                 edit: true,
                 delete: true,
             },
-            { width: '100px' },
+            { width: '130px' },
         ),
     ];
 
     const searchFields = [
         {
-            key: 'developerId',
-            type: FieldTypes.SELECT,
-            placeholder: translate.formatMessage(commonMessage.developerName),
-            options: autoCompleteOptions,
-            loading: autoCompleteLoading,
-            
-        },
-        {
-            key: 'status',
-            placeholder: translate.formatMessage(commonMessage.status),
-            type: FieldTypes.SELECT,
-            options: stateValues,
+            key: 'name',
+            placeholder: translate.formatMessage(commonMessage.testPlan),
         },
     ];
 
     const handleSearch = (values) => {
         const params = new URLSearchParams(location.search);
-        params.set('developerId', values.developerId || '');
-        params.set('status', values.status || '');
+        params.set('name', values.name || '');
         navigate({ search: params.toString() });
-        localStorage.setItem(storageKey, JSON.stringify(values));
     };
 
     const handleReset = (values) => {
         const params = new URLSearchParams(location.search);
 
-        if (params.has('developerId')) {
-            params.delete('developerId');
+        if (params.has('name')) {
+            params.delete('name');
         }
-        if (params.has('status')) {
-            params.delete('status');
-        }
+
         navigate({ search: params.toString() });
-        localStorage.removeItem(storageKey);
     };
 
     useEffect(() => {
-        const savedSearchValues = JSON.parse(localStorage.getItem(storageKey)) || {};
-        setSearchValues(savedSearchValues);
-
         const params = new URLSearchParams(location.search);
-        const developerId = params.get('developerId');
-        const status = params.get('status');
-        mixinFuncs.getList({ developerId, status });
-    }, [location.search, activeTab]);
+        const name = params.get('name');
+
+        mixinFuncs.getList({ name });
+    }, [location.search]);
+
+    const handleNavigate = () => {
+        const queryParams = new URLSearchParams(location.search);
+        const projectName = queryParams.get('projectName');
+        const projectId = queryParams.get('projectId');
+        const storyName = queryParams.get('storyName');
+        const storyId = queryParams.get('storyId');
+        const active = true;
+
+        navigate(`/project/task/summary-bug?projectId=${projectId}&storyId=${storyId}&storyName=${storyName}&active=${active}&projectName=${projectName}`);
+    };
 
     return (
         <>
+            <Button 
+                onClick={handleNavigate}
+                type="primary"  style={{ marginBottom : "8px", marginLeft: "950px" }}>Tổng hợp bug
+
+            </Button>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({
                     fields: searchFields,
-                    initialValues: searchValues,
+                    initialValues: queryFilter,
                     onSearch: handleSearch,
                     onReset: handleReset,
-                    activeTab: activeTab,
                 })}
                 actionBar={mixinFuncs.renderActionBar()}
                 baseTable={
@@ -208,4 +215,4 @@ const StoryProject = ({ projectId, activeTab }) => {
     );
 };
 
-export default StoryProject;
+export default TestPlan;
