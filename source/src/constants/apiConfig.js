@@ -112,9 +112,11 @@ const apiConfig = {
     },
     file: {
         upload: {
-            path: `${AppConstants.mediaRootUrl}api/file/upload`,
+            path: `${AppConstants.mediaRootUrl}v1/file/upload`,
             method: 'POST',
             headers: multipartFormHeader,
+            isRequiredTenantId: true,
+            isUpload: true,
         },
         image: {
             path: `${AppConstants.mediaRootUrl}admin/api/image/upload`,

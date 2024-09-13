@@ -34,7 +34,7 @@ export default {
         auth: true,
         component: StoryProjectSavePage,
         keyActiveTab: 'activeProjectTab',
-        //permissions: [apiConfig.project.getById.baseURL],
+        permissions: [apiConfig.story.getById.baseURL],
     },
     MemberProjectSavePage: {
         path: '/project/member/:id',
@@ -42,6 +42,6 @@ export default {
         auth: true,
         component: MemberProjectSavePage,
         keyActiveTab: 'activeProjectTab',
-        //permissions: [apiConfig.project.getById.baseURL],
+        permissions: [apiConfig.memberProject.getById.baseURL],
     },
 };

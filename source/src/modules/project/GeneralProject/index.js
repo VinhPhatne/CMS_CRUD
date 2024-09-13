@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import StoryProject from './StoryProject';
 import MemberProject from './MemberProject';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import routes from '../routes';
 
 const ProjectPage = () => {
@@ -17,6 +17,19 @@ const ProjectPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const projectName = queryParams.get('projectName');
     const projectId = queryParams.get('projectId');
+
+    const navigate = useNavigate();
+    const handleTabClick = (key) => {
+        setActiveTab(key);
+        localStorage.setItem(routes.ProjectPage.keyActiveTab, key);
+
+        if (key === 'member') {
+            const params = new URLSearchParams(location.search);
+            params.delete('developerId');
+            params.delete('status');
+            navigate({ search: params.toString() });
+        }
+    };
 
     console.log('projectId', projectId);
     console.log('projectName', projectName);
@@ -39,10 +52,7 @@ const ProjectPage = () => {
             <Card className="card-form" bordered={false}>
                 <Tabs
                     type="card"
-                    onTabClick={(key) => {
-                        setActiveTab(key);
-                        //localStorage.setItem(routes.settingsPage.keyActiveTab, key);
-                    }}
+                    onTabClick={handleTabClick}
                     activeKey={activeTab}
                     items={[
                         {

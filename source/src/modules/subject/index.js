@@ -71,12 +71,7 @@ const SubjectListPage = () => {
             render: (subjectName, record) => {
                 console.log(record);
                 return (
-                    <Link
-                        to={`/subject/lecture/${record.id}/?subjectName=${record.subjectName}`}
-                        // to={`/subject/lecture/${record.id}`}
-                    >
-                        {subjectName}
-                    </Link>
+                    <Link to={`/subject/lecture/${record.id}?subjectName=${record.subjectName}`}>{subjectName}</Link>
                 );
             },
         },
@@ -119,7 +114,7 @@ const SubjectListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.course) }]}>
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.subject) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}

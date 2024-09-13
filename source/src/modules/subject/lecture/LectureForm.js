@@ -2,34 +2,56 @@ import { Card, Col, Form, InputNumber, Row, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
 import TextField from '@components/common/form/TextField';
-import CropImageField from '@components/common/form/CropImageField';
-import { AppConstants } from '@constants';
-import useFetch from '@hooks/useFetch';
-import apiConfig from '@constants/apiConfig';
 import SelectField from '@components/common/form/SelectField';
 import useTranslate from '@hooks/useTranslate';
 import { statusOptions } from '@constants/masterData';
 import { FormattedMessage } from 'react-intl';
 import { BaseForm } from '@components/common/form/BaseForm';
-import AutoCompleteField from '@components/common/form/AutoCompleteField';
-import DatePickerField from '@components/common/form/DatePickerField';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT } from '@constants/index';
-import { formatDateString } from '@utils/index';
 import RichTextField from '@components/common/form/RichTextField';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import useFetch from '@hooks/useFetch';
+import apiConfig from '@constants/apiConfig';
 
 dayjs.extend(customParseFormat);
 
 const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, categories, isEditing }) => {
     const [lectureKind, setLectureKind] = useState(null);
+    const [items, setItems] = useState([]);
+    const [nextOrdering, setNextOrdering] = useState(null);
+
+    const location = useLocation();
 
     const { subjectId } = useParams();
+
+    const { data: dataListLecture } = useFetch(apiConfig.lecture.getBySubject, {
+        pathParams: { id: subjectId },
+        immediate: true,
+        mappingData: (response) => response.data.content,
+    });
+
+    const { execute: updateSortLecture } = useFetch(apiConfig.lecture.updateSort, {
+        immediate: false,
+    });
+
+    useEffect(() => {
+        // Parse URL to get nextOrdering
+        const queryParams = new URLSearchParams(location.search);
+        const ordering = queryParams.get('nextOrdering');
+        setNextOrdering(ordering ? parseInt(ordering, 10) : null);
+    }, [location.search]);
 
     const handleLectureKindChange = (value) => {
         setLectureKind(value);
     };
+
+    useEffect(() => {
+        if (dataListLecture) {
+            const sortedItems = [...dataListLecture].sort((a, b) => a.ordering - b.ordering);
+            setItems(sortedItems);
+        }
+    }, [dataListLecture]);
 
     const translate = useTranslate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
@@ -39,13 +61,31 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
         setIsChangedFormValues,
     });
 
-    const handleSubmit = (values) => {
-        //values.lectureKind = lectureKind;
-        //values.lectureName = lectureName;
+    console.log('nextOrdering', nextOrdering);
+
+    const handleSubmit = async (values) => {
         values.status = 1;
         values.subjectId = subjectId;
+        const id = `${Date.now()}`;
+        values.id = id;
+
+        const newOrdering =
+            nextOrdering !== null ? nextOrdering : items.length > 0 ? items[items.length - 1].ordering + 1 : 1;
+
+        values.ordering = newOrdering;
+
+        const updatedItems = items.map((item) => {
+            if (item.ordering >= newOrdering) {
+                return { ...item, ordering: item.ordering + 1 };
+            }
+            return item;
+        });
+        updatedItems.push(values);
+
+        await updateSortLecture({ data: updatedItems });
+        await mixinFuncs.handleSubmit({ ...values });
+
         console.log('check data', values);
-        return mixinFuncs.handleSubmit({ ...values });
     };
 
     useEffect(() => {
@@ -77,17 +117,15 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
                         <SelectField
                             label={<FormattedMessage defaultMessage="Loại bài giảng" />}
                             name="lectureKind"
-                            //name=['subject', 'id']
-
                             options={[
                                 { value: 1, label: 'Chương' },
                                 { value: 2, label: 'Bài học' },
                             ]}
-                            onChange={handleLectureKindChange} // Gọi hàm khi thay đổi giá trị
+                            onChange={handleLectureKindChange}
                         />
                     </Col>
                 </Row>
-                {lectureKind !== 1 && (
+                {lectureKind !== 1 && dataDetail.lectureKind !== 1 && (
                     <>
                         <Row gutter={24}>
                             <Col span={12}>
