@@ -129,38 +129,6 @@ const apiConfig = {
             headers: multipartFormHeader,
         },
     },
-    category: {
-        getList: {
-            baseURL: `${apiUrl}api/category/list`,
-            method: 'GET',
-            headers: baseHeader,
-        },
-        getById: {
-            baseURL: `${apiUrl}api/category/get/:id`,
-            method: 'GET',
-            headers: baseHeader,
-        },
-        create: {
-            baseURL: `${apiUrl}api/category/create`,
-            method: 'POST',
-            headers: baseHeader,
-        },
-        update: {
-            baseURL: `${apiUrl}api/category/update`,
-            method: 'PUT',
-            headers: baseHeader,
-        },
-        delete: {
-            baseURL: `${apiUrl}api/category/delete/:id`,
-            method: 'DELETE',
-            headers: baseHeader,
-        },
-        autocomplete: {
-            baseURL: `${apiUrl}api/category/auto-complete`,
-            method: 'GET',
-            headers: baseHeader,
-        },
-    },
     languages: {
         getList: {
             baseURL: `${apiUrl}admin/api/languages`,
@@ -974,6 +942,44 @@ const apiConfig = {
         },
         summaryBug: {
             baseURL: `${apiTenantUrl}v1/test-plan/summary-bug`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+    },
+    category: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/category/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/category/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/category/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/category/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/category/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        autocomplete: {
+            baseURL: `${apiTenantUrl}v1/category/auto-complete`,
             method: 'GET',
             headers: baseHeader,
             isRequiredTenantId: true,

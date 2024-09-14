@@ -82,6 +82,7 @@ export const STATUS_INACTIVE = -1;
 export const STATUS_DELETE = -2;
 
 export const DEFAULT_TABLE_ITEM_SIZE = 10;
+export const DEFAULT_TABLE_ITEM_SIZE_XL = 20;
 export const DEFAULT_TABLE_PAGE_START = 0;
 
 export const commonStatus = {

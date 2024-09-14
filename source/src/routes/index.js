@@ -14,6 +14,8 @@ import settingsRoutes from '@modules/settings/routes';
 import coursesRoutes from '@modules/course/routes';
 import subjectsRoutes from '@modules/subject/routes';
 import projectRoutes from '@modules/project/routes';
+import developerRoutes from '@modules/developer/routes';
+import studentRoutes from '@modules/student/routes';
 /*
 	auth
 		+ null: access login and not login
@@ -82,6 +84,8 @@ const routes = {
     ...coursesRoutes,
     ...subjectsRoutes,
     ...projectRoutes,
+    ...developerRoutes,
+    ...studentRoutes,
     // keep this at last
     notFound: {
         component: PageNotFound,
