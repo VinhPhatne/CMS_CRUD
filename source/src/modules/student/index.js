@@ -1,13 +1,19 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Modal, Tag } from 'antd';
+import { Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { AppConstants, categoryKind, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
+import {
+    AppConstants,
+    categoryKind,
+    DEFAULT_FORMAT,
+    DEFAULT_TABLE_ITEM_SIZE,
+    DEFAULT_TABLE_ITEM_SIZE_XL,
+} from '@constants';
 import { FieldTypes } from '@constants/formConfig';
 import { statusOptions } from '@constants/masterData';
 import useFetch from '@hooks/useFetch';
@@ -18,24 +24,21 @@ import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { stateCourseOptions } from '@constants/masterData';
+import Icon from '@ant-design/icons/lib/components/Icon';
+
 const message = defineMessages({
     objectName: 'course',
 });
 
-const CourseListPage = () => {
+const StudentListPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
-    const notification = useNotification();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.courses.update);
-
-    const { formatMessage } = useIntl();
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
-        apiConfig: apiConfig.courses,
+        apiConfig: apiConfig.student,
         options: {
-            pageSize: DEFAULT_TABLE_ITEM_SIZE,
+            pageSize: DEFAULT_TABLE_ITEM_SIZE_XL,
             objectName: translate.formatMessage(message.objectName),
         },
         override: (funcs) => {
@@ -48,22 +51,22 @@ const CourseListPage = () => {
                 }
             };
             funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
+                if (!mixinFuncs.hasPermission([apiConfig.registration.getById.baseURL])) return {};
                 return {
-                    registration: ({ id, name, state, status }) => {
+                    registration: ({ studentId, studentName }) => {
                         return (
                             <Button
                                 type="link"
                                 style={{ padding: 0 }}
                                 onClick={() => {
                                     navigate(
-                                        `/course/registration?courseId=${id}&courseName=${encodeURIComponent(
-                                            name,
-                                        )}&courseState=${state}&courseStatus=${status}`,
+                                        `/student/course?studentId=${studentId}&studentName=${encodeURIComponent(
+                                            studentName,
+                                        )}`,
                                     );
                                 }}
                             >
-                                <UsergroupDeleteOutlined />
+                                <Icon type="account-book" theme="twoTone" />
                             </Button>
                         );
                     },
@@ -76,7 +79,11 @@ const CourseListPage = () => {
         if (isNaN(amount)) {
             return 'Invalid amount';
         }
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        return new Intl.NumberFormat('USA', {
+            style: 'currency',
+            currency: 'USD',
+            useGrouping: false,
+        }).format(amount);
     };
 
     const columns = [
@@ -92,7 +99,7 @@ const CourseListPage = () => {
         },
         {
             title: '#',
-            dataIndex: 'avatar',
+            dataIndex: ['account', 'avatar'],
             align: 'center',
             width: 70,
             render: (avatar) => (
@@ -103,65 +110,27 @@ const CourseListPage = () => {
                 />
             ),
         },
-        { title: <FormattedMessage defaultMessage="Tên Khóa Học" />, dataIndex: 'name', width: 200 },
-        {
-            title: <FormattedMessage defaultMessage="Tên môn học" />,
-            width: 300,
-            dataIndex: ['subject', 'subjectName'],
-            render: (subjectName, record) => (
-                <div>
-                    <div>{record.subject?.subjectName}</div>
-                    <div>{record.leader?.account?.fullName}</div>
-                </div>
-            ),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Học phí" />,
-            dataIndex: 'fee',
-            align: 'right',
-            render: (fee) => formatMoney(fee),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
-            width: 180,
-            dataIndex: 'dateEnd',
-            align: 'right',
-            render: (createdDate) => {
-                const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
-                return <div>{createdDateLocal}</div>;
-            },
-        },
-        {
-            title: <FormattedMessage id="courseListPage.status" defaultMessage="Trạng thái" />,
-            width: 180,
-            dataIndex: 'state',
-            align: 'center',
-            render: (state) => {
-                const stateOption = stateCourseOptions.find((option) => option.value === state);
-                return stateOption ? (
-                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-                ) : (
-                    <FormattedMessage id="courseListPage.unknownStatus" defaultMessage="Không xác định" />
-                );
-            },
-        },
+        { title: <FormattedMessage defaultMessage="Họ và tên" />, dataIndex: ['account', 'fullName'], width: 200 },
+        { title: <FormattedMessage defaultMessage="Ngày sinh" />, dataIndex: ['account', 'birthday'], width: 200 },
+        { title: <FormattedMessage defaultMessage="Số điện thoại" />, dataIndex: ['account', 'phone'], width: 150 },
+        { title: <FormattedMessage defaultMessage="Email" />, dataIndex: ['account', 'email'], width: 200 },
+        { title: <FormattedMessage defaultMessage="Trường" />, dataIndex: ['university', 'categoryName'], width: 500 },
+        { title: <FormattedMessage defaultMessage="Hệ" />, dataIndex: ['studyClass', 'categoryName'], width: 150 },
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
-                registration: {
-                    permissions: apiConfig.courses.getById.baseURL,
-                },
+                registration: true,
                 edit: true,
                 delete: true,
             },
-            { width: '180px' },
+            { width: '180px', fixed: 'right' },
         ),
     ];
 
     const searchFields = [
         {
             key: 'name',
-            placeholder: translate.formatMessage(commonMessage.nameCourses),
+            placeholder: translate.formatMessage(commonMessage.developerName),
         },
         {
             key: 'status',
@@ -172,7 +141,7 @@ const CourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.course) }]}>
+        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.student) }]}>
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}
@@ -190,4 +159,4 @@ const CourseListPage = () => {
     );
 };
 
-export default CourseListPage;
+export default StudentListPage;

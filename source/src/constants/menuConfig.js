@@ -13,6 +13,11 @@ export const navMenuConfig = [
         permission: apiConfig.courses.getList.baseURL,
         children: [
             {
+                label: <FormattedMessage defaultMessage="Quản lý sinh viên" />,
+                key: 'student',
+                path: routes.StudentListPage.path,
+            },
+            {
                 label: <FormattedMessage defaultMessage="Khoá học" />,
                 key: 'course',
                 path: routes.coursesPage.path,
@@ -30,6 +35,11 @@ export const navMenuConfig = [
         icon: <IconSettings size={16} />,
         permission: apiConfig.project.getList.baseURL,
         children: [
+            {
+                label: <FormattedMessage defaultMessage="Quản lý lập trình viên" />,
+                key: 'developer',
+                path: routes.DeveloperListPage.path,
+            },
             {
                 label: <FormattedMessage defaultMessage="Dự án" />,
                 key: 'project',

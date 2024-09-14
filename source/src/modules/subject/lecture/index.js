@@ -205,7 +205,7 @@ const LectureListPage = () => {
                 edit: true,
                 delete: true,
             },
-            { width: '130px', align: 'right' },
+            { width: '130px', align: 'right', fixed: "right" },
         ),
     ];
 
@@ -243,6 +243,7 @@ const LectureListPage = () => {
                                     onRow={(record) => ({
                                         style: getRowStyle(record),
                                     })}
+                                    scroll={{ x: 'max-content' }}
                                 />
                             </SortableContext>
                         </DndContext>
