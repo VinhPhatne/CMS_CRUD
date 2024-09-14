@@ -1,40 +1,41 @@
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { categoryKind } from '@constants';
 import apiConfig from '@constants/apiConfig';
-import useFetch from '@hooks/useFetch';
 import useSaveBase from '@hooks/useSaveBase';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import routes from '../routes';
 import useTranslate from '@hooks/useTranslate';
-import RegisterCourseForm from './RegisterCourseForm';
-import { useLocation } from 'react-router-dom';
+import ProjectRegistrationForm from './ProjectRegistrationForm';
 import { commonMessage } from '@locales/intl';
 
 const message = defineMessages({
-    objectName: 'courses registration',
+    objectName: 'developer',
 });
 
-const RegisterCourseSavePage = () => {
+const ProjectRegistrationSavePage = () => {
     const translate = useTranslate();
-    const location = useLocation();
+
     const queryString = location.search;
-    const params = new URLSearchParams(location.search);
-    const courseId = params.get('courseId');
-    const courseName = params.get('courseName');
-    const courseState = params.get('courseState');
-    const courseStatus = params.get('courseStatus');
+    const queryParams = new URLSearchParams(location.search);
+    const currentUrl = new URL(window.location.href);
+    const searchParams = new URLSearchParams(currentUrl.search);
+    const studentId = searchParams.get('studentId') || 'null';
+    const studentName = searchParams.get('studentName') || 'null';
+    const registrationId = searchParams.get('registrationId') || 'null';
+    const courseId = searchParams.get('courseId') || 'null';
+    const courseName = searchParams.get('courseName') || 'null';
+    const courseState = searchParams.get('courseState') || 'null';
+    const courseStatus = searchParams.get('courseStatus') || 'null';
 
     const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
         apiConfig: {
-            getById: apiConfig.registration.getById,
-            create: apiConfig.registration.create,
-            update: apiConfig.registration.update,
+            getById: apiConfig.registrationProject.getById,
+            create: apiConfig.registrationProject.create,
+            update: apiConfig.registrationProject.update,
         },
         options: {
-            getListUrl: routes.registerListPage.path,
+            getListUrl: routes.ProjectRegisterListPage.path,
             objectName: translate.formatMessage(message.objectName),
-            initialData: { courseId, courseName, courseState, courseStatus },
         },
         override: (funcs) => {
             funcs.prepareUpdateData = (data) => {
@@ -54,16 +55,14 @@ const RegisterCourseSavePage = () => {
         <PageWrapper
             loading={loading}
             routes={[
-                { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
-                {
-                    breadcrumbName: translate.formatMessage(commonMessage.registrationCourse),
-                    path: `course/registration${queryString}`,
-                },
+                { breadcrumbName: translate.formatMessage(commonMessage.student), path: routes.StudentListPage.path },
+                { breadcrumbName: courseName, path: `/student/course?studentId=${studentId}&studentName=${studentName}` },
+                { breadcrumbName: translate.formatMessage(commonMessage.registrationProject), path: `/student/registration-project${queryString}`  },
                 { breadcrumbName: title },
             ]}
             title={title}
         >
-            <RegisterCourseForm
+            <ProjectRegistrationForm
                 setIsChangedFormValues={setIsChangedFormValues}
                 dataDetail={detail ? detail : {}}
                 formId={mixinFuncs.getFormId()}
@@ -75,4 +74,4 @@ const RegisterCourseSavePage = () => {
     );
 };
 
-export default RegisterCourseSavePage;
+export default ProjectRegistrationSavePage;

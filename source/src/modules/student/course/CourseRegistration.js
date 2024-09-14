@@ -3,40 +3,37 @@ import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import { Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined, BulbOutlined,FieldTimeOutlined } from '@ant-design/icons';
-import AvatarField from '@components/common/form/AvatarField';
+import { PlusSquareOutlined } from '@ant-design/icons';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
-import {
-    AppConstants,
-    categoryKind,
-    DEFAULT_FORMAT,
-    DEFAULT_TABLE_ITEM_SIZE,
-    DEFAULT_TABLE_ITEM_SIZE_XL,
-} from '@constants';
-import { FieldTypes } from '@constants/formConfig';
-import { statusOptions } from '@constants/masterData';
-import useFetch from '@hooks/useFetch';
-import useNotification from '@hooks/useNotification';
+import { DEFAULT_TABLE_ITEM_SIZE } from '@constants';
+import { stateResgistration } from '@constants/masterData';
 import useTranslate from '@hooks/useTranslate';
+import { defineMessages, FormattedMessage } from 'react-intl';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { FieldTypes } from '@constants/formConfig';
 import { commonMessage } from '@locales/intl';
-import { convertUtcToLocalTime } from '@utils';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
-import { stateCourseOptions } from '@constants/masterData';
+import routes from '../routes';
+
 const message = defineMessages({
-    objectName: 'course',
+    objectName: 'Registration Course',
 });
 
-const DeveloperListPage = () => {
+const CourseRegistration = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
-    const statusValues = translate.formatKeys(statusOptions, ['label']);
+
+    const location = useLocation();
+    const stateValues = translate.formatKeys(stateResgistration, ['label']);
+
+    const queryParams = new URLSearchParams(location.search);
+    const studentId = queryParams.get('studentId');
+    const studentName = queryParams.get('studentName');
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
-        apiConfig: apiConfig.developer,
+        apiConfig: apiConfig.registration,
         options: {
-            pageSize: DEFAULT_TABLE_ITEM_SIZE_XL,
+            pageSize: DEFAULT_TABLE_ITEM_SIZE,
             objectName: translate.formatMessage(message.objectName),
         },
         override: (funcs) => {
@@ -45,49 +42,34 @@ const DeveloperListPage = () => {
                     return {
                         data: response.data.content.map((item) => ({
                             ...item,
-                            name: item.accountDto?.fullName,
+                            registrationId: item.id,
+                            courseName: item.courseName,
+                            courseState: item.state,
                         })),
                         total: response.data.totalElements,
                     };
                 }
             };
             funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
                 return {
-                    project: (record) => {
-                        const { id, name } = record;
+                    registration: (record) => {
+                        const { registrationId, courseName, courseState } = record;
+
                         return (
                             <Button
                                 type="link"
                                 style={{ padding: 0 }}
                                 onClick={() => {
                                     navigate(
-                                        `/developer/project?developerId=${id}&developerName=${encodeURIComponent(name)}`,
+                                        `/student/registration-project?studentId=${studentId}&studentName=${encodeURIComponent(
+                                            studentName,
+                                        )}&registrationId=${registrationId}&courseName=${encodeURIComponent(
+                                            courseName,
+                                        )}&courseState=${courseState}`,
                                     );
                                 }}
                             >
-                                <BulbOutlined />
-                            </Button>
-                        );
-                    },
-                };
-            };
-            funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
-                return {
-                    dayOff: (record) => {
-                        const { id, name } = record;
-                        return (
-                            <Button
-                                type="link"
-                                style={{ padding: 0 }}
-                                onClick={() => {
-                                    navigate(
-                                        `/developer/day-off-log?developerId=${id}&developerName=${encodeURIComponent(name)}`,
-                                    );
-                                }}
-                            >
-                                <FieldTimeOutlined />
+                                <PlusSquareOutlined />
                             </Button>
                         );
                     },
@@ -96,72 +78,43 @@ const DeveloperListPage = () => {
         },
     });
 
-    const formatMoney = (amount) => {
-        if (isNaN(amount)) {
-            return 'Invalid amount';
-        }
-        return new Intl.NumberFormat('USA', {
-            style: 'currency',
-            currency: 'USD',
-            useGrouping: false,
-        }).format(amount);
-    };
-
     const columns = [
         {
-            title: '#',
-            dataIndex: 'index',
+            title: 'Tên khoá học',
+            dataIndex: 'courseName',
+            width: 150,
+        },
+        {
+            title: <FormattedMessage defaultMessage="Tổng dự án" />,
+            dataIndex: 'totalProject',
             align: 'center',
-            width: 40,
-            render: (text, record, index) => {
-                const { current, pageSize } = pagination;
-                return (current - 1) * pageSize + index + 1;
+            width: 120,
+            render: (totalProject, record) => {
+                const { minusTrainingProjectMoney } = record;
+
+                return (
+                    <>
+                        <div>{`${totalProject}/3`}</div>
+                    </>
+                );
             },
         },
         {
-            title: '#',
-            dataIndex: ['accountDto', 'avatar'],
-            align: 'center',
-            width: 70,
-            render: (avatar) => (
-                <AvatarField
-                    size="large"
-                    icon={<UserOutlined />}
-                    src={avatar ? `${AppConstants.contentRootUrl}${avatar}` : null}
-                />
-            ),
-        },
-        { title: <FormattedMessage defaultMessage="Họ và tên" />, dataIndex: ['accountDto', 'fullName'], width: 200 },
-        {
-            title: <FormattedMessage defaultMessage="Vai trò" />,
-            width: 150,
-            dataIndex: ['developerRole', 'categoryName'],
+            title: <FormattedMessage defaultMessage="Tỉ lệ đào tạo" />,
+            dataIndex: 'Tốt',
+            width: 120,
+            //dataIndex: 'studentName',
         },
         {
-            title: <FormattedMessage defaultMessage="Lương cứng" />,
-            dataIndex: 'salary',
-            align: 'right',
-            width: 150,
-            render: (fee) => formatMoney(fee),
+            title: <FormattedMessage defaultMessage="Tỉ lệ dự án" />,
+            dataIndex: 'Tốt',
+            width: 120,
+            //dataIndex: 'studentName',
         },
-        {
-            title: <FormattedMessage defaultMessage="Lương theo giờ	" />,
-            dataIndex: 'hourlySalary',
-            align: 'right',
-            width: 150,
-            render: (fee) => formatMoney(fee),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Số điện thoại" />,
-            dataIndex: ['accountDto', 'phone'],
-            width: 200,
-            align: 'center',
-        },
-
         {
             title: 'Lịch trình',
             dataIndex: 'schedule',
-            align: 'center',
+            width: 200,
             render: (scheduleData) => {
                 let parsedSchedule = {};
                 try {
@@ -191,7 +144,11 @@ const DeveloperListPage = () => {
                             const scheduleTime = hasSchedule ? parsedSchedule[dayKey] : null;
 
                             return (
-                                <Tooltip key={index} title={scheduleTime || 'No schedule'} placement="top">
+                                <Tooltip
+                                    key={index}
+                                    title={scheduleTime || 'No schedule'} // Show time if available
+                                    placement="top"
+                                >
                                     <div
                                         key={index}
                                         style={{
@@ -217,11 +174,23 @@ const DeveloperListPage = () => {
                 );
             },
         },
-        mixinFuncs.renderStatusColumn({ width: '90px' }),
+        {
+            title: <FormattedMessage defaultMessage="Trạng thái" />,
+            width: 180,
+            dataIndex: 'state',
+            align: 'center',
+            render: (state) => {
+                const stateOption = stateResgistration.find((option) => option.value === state);
+                return stateOption ? (
+                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
+                ) : (
+                    <FormattedMessage id="courseListPage.unknownStatus" defaultMessage="Không xác định" />
+                );
+            },
+        },
         mixinFuncs.renderActionColumn(
             {
-                project : true,
-                dayOff : true,   
+                registration: true,
                 edit: true,
                 delete: true,
             },
@@ -231,22 +200,56 @@ const DeveloperListPage = () => {
 
     const searchFields = [
         {
-            key: 'name',
-            placeholder: translate.formatMessage(commonMessage.developerName),
-        },
-        {
-            key: 'status',
-            placeholder: translate.formatMessage(commonMessage.status),
+            key: 'state',
+            placeholder: translate.formatMessage(commonMessage.state),
             type: FieldTypes.SELECT,
-            options: statusValues,
+            options: stateValues,
         },
     ];
 
+    const [searchValues, setSearchValues] = useState({});
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const state = params.get('state');
+        const studentId = params.get('studentId');
+        const studentName = params.get('studentName');
+    
+        mixinFuncs.getList({ state, studentId, studentName });
+    }, [location.search]);
+
+    const handleSearch = (values) => {
+        const params = new URLSearchParams(location.search);
+    
+        // Giữ lại tất cả các tham số hiện tại trong URL
+        const studentId = params.get('studentId') || '';
+        const studentName = params.get('studentName') || '';
+    
+        // Cập nhật tham số 'state' từ form tìm kiếm
+        params.set('state', values.state || '');
+    
+        // Giữ lại các tham số khác
+        params.set('studentId', studentId);
+        params.set('studentName', studentName);
+    
+        // Điều hướng với URL mới chứa đầy đủ tham số
+        navigate({ search: params.toString() });
+    };
+
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.developer) }]}>
+        <PageWrapper
+            routes={[
+                { breadcrumbName: translate.formatMessage(commonMessage.student), path: routes.StudentListPage.path },
+                { breadcrumbName: translate.formatMessage(commonMessage.course) },
+            ]}
+        >
             <ListPage
-                searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
-                actionBar={mixinFuncs.renderActionBar()}
+                searchForm={mixinFuncs.renderSearchForm({ 
+                    fields: searchFields,
+                    initialValues: queryFilter, 
+                    onSearch: handleSearch,
+                })}
+                title={studentName}
                 baseTable={
                     <BaseTable
                         onChange={mixinFuncs.changePagination}
@@ -261,4 +264,4 @@ const DeveloperListPage = () => {
     );
 };
 
-export default DeveloperListPage;
+export default CourseRegistration;

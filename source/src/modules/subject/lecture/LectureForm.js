@@ -60,9 +60,6 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
         setIsChangedFormValues,
     });
 
-    console.log('nextOrdering', nextOrdering);
-    console.log('itemssssssssssss', items);
-
     const handleSubmit = async (values) => {
         values.status = 1;
         values.subjectId = subjectId;
@@ -70,7 +67,6 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
         values.id = id;
 
         const validItemsLength = Array.isArray(items) ? items.length : 0;
-        console.log("validItemsLength: " + validItemsLength);
 
         const newOrdering =
             nextOrdering !== null && !isNaN(nextOrdering)
@@ -79,7 +75,6 @@ const LectureForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVa
                     ? validItemsLength + 1  
                     : 0;  
 
-        console.log("newOrdering: " + newOrdering);
         values.ordering = newOrdering;
 
         const updatedItems = items.map((item) => {

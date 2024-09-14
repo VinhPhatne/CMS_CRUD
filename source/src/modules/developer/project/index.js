@@ -35,7 +35,7 @@ const message = defineMessages({
     objectName: 'Dự án',
 });
 
-const ProjectListPage = () => {
+const DeveloperProjectPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
     const notification = useNotification();
@@ -335,4 +335,4 @@ const ProjectListPage = () => {
     );
 };
 
-export default ProjectListPage;
+export default DeveloperProjectPage;

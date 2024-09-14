@@ -20,13 +20,13 @@ const message = defineMessages({
     objectName: 'course',
 });
 
-const CourseListPage = () => {
+const DeveloperDayOffPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
-        apiConfig: apiConfig.courses,
+        apiConfig: apiConfig.dayOff,
         options: {
             pageSize: DEFAULT_TABLE_ITEM_SIZE,
             objectName: translate.formatMessage(message.objectName),
@@ -40,110 +40,48 @@ const CourseListPage = () => {
                     };
                 }
             };
-            funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
-                return {
-                    registration: ({ id, name, state, status }) => {
-                        return (
-                            <Button
-                                type="link"
-                                style={{ padding: 0 }}
-                                onClick={() => {
-                                    navigate(
-                                        `/course/registration?courseId=${id}&courseName=${encodeURIComponent(
-                                            name,
-                                        )}&courseState=${state}&courseStatus=${status}`,
-                                    );
-                                }}
-                            >
-                                <UsergroupDeleteOutlined />
-                            </Button>
-                        );
-                    },
-                };
-            };
         },
     });
 
-    const formatMoney = (amount) => {
-        if (isNaN(amount)) {
-            return 'Invalid amount';
-        }
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-    };
-
     const columns = [
         {
-            title: '#',
-            dataIndex: 'index',
-            align: 'center',
-            width: 40,
-            render: (text, record, index) => {
-                const { current, pageSize } = pagination;
-                return (current - 1) * pageSize + index + 1;
-            },
-        },
-        {
-            title: '#',
-            dataIndex: 'avatar',
-            align: 'center',
-            width: 70,
-            render: (avatar) => (
-                <AvatarField
-                    size="large"
-                    icon={<UserOutlined />}
-                    src={avatar ? `${AppConstants.contentRootUrl}${avatar}` : null}
-                />
-            ),
-        },
-        { title: <FormattedMessage defaultMessage="Tên Khóa Học" />, dataIndex: 'name', width: 200 },
-        {
-            title: <FormattedMessage defaultMessage="Tên môn học" />,
-            width: 300,
-            dataIndex: ['subject', 'subjectName'],
-            render: (subjectName, record) => (
-                <div>
-                    <div>{record.subject?.subjectName}</div>
-                    <div>{record.leader?.account?.fullName}</div>
-                </div>
-            ),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Học phí" />,
-            dataIndex: 'fee',
-            align: 'right',
-            render: (fee) => formatMoney(fee),
-        },
-        {
-            title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
-            width: 180,
-            dataIndex: 'dateEnd',
-            align: 'right',
+            title: <FormattedMessage defaultMessage="Ngày bắt đầu" />,
+            width: 200,
+            dataIndex: 'startDate',
+            align: 'left',
             render: (createdDate) => {
                 const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
                 return <div>{createdDateLocal}</div>;
             },
         },
         {
-            title: <FormattedMessage defaultMessage="Trạng thái" />,
-            width: 180,
-            dataIndex: 'state',
-            align: 'center',
-            render: (state) => {
-                const stateOption = stateCourseOptions.find((option) => option.value === state);
-                return stateOption ? (
-                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-                ) : (
-                    <FormattedMessage defaultMessage="Không xác định" />
-                );
+            title: <FormattedMessage defaultMessage="Ngày kết thúc" />,
+            width: 200,
+            dataIndex: 'endDate',
+            align: 'left',
+            render: (createdDate) => {
+                const createdDateLocal = convertUtcToLocalTime(createdDate, DEFAULT_FORMAT, DEFAULT_FORMAT);
+                return <div>{createdDateLocal}</div>;
             },
         },
-        mixinFuncs.renderStatusColumn({ width: '90px' }),
+        { title: <FormattedMessage defaultMessage="Tổng thời gian" />, dataIndex: 'totalHour',align: 'center', width: 150 },
+        { title: <FormattedMessage defaultMessage="Lý do" />, dataIndex: 'note',align: 'center', width: 150 },
+
+        {
+            title: <FormattedMessage defaultMessage="Loại" />,
+            width: 180,
+            dataIndex: 'isCharged',
+            align: 'center',
+            render: (isCharged) => {
+                if (isCharged) {
+                    return <Tag color="red">Trừ tiền</Tag>;
+                } else {
+                    return <Tag color="green">Không trừ tiền</Tag>;
+                }
+            },
+        },
         mixinFuncs.renderActionColumn(
             {
-                registration: {
-                    permissions: apiConfig.courses.getById.baseURL,
-                },
                 edit: true,
                 delete: true,
             },
@@ -183,4 +121,4 @@ const CourseListPage = () => {
     );
 };
 
-export default CourseListPage;
+export default DeveloperDayOffPage;

@@ -1,22 +1,17 @@
 import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
-import { Button, Modal, Tag, Tooltip  } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Modal, Tag, Tooltip } from 'antd';
+import React from 'react';
 import { EyeOutlined, UserOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
 import { AppConstants, categoryKind, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
-import { FieldTypes } from '@constants/formConfig';
-import { stateResgistration } from '@constants/masterData';
-import useFetch from '@hooks/useFetch';
-import useNotification from '@hooks/useNotification';
 import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
-import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import routes from '../routes';
 const message = defineMessages({
     objectName: 'Registration Course',
@@ -24,23 +19,8 @@ const message = defineMessages({
 
 const RegistrationCourseListPage = () => {
     const translate = useTranslate();
-    const navigate = useNavigate();
-    const notification = useNotification();
-    const statusValues = translate.formatKeys(stateResgistration, ['label']);
-    const [showPreviewModal, setShowPreviewModal] = useState(false);
-    const { execute: executeUpdateNewsPin, loading: updateNewsPinLoading } = useFetch(apiConfig.courses.update);
-
-    const location = useLocation();
-
     const { pathname: pagePath } = useLocation();
 
-    const queryParams = new URLSearchParams(location.search);
-    const courseId = queryParams.get('courseId');
-    const courseName = queryParams.get('courseName');
-    const courseState = queryParams.get('courseState');
-    const courseStatus = queryParams.get('courseStatus');
-
-    console.log("check param >> ",courseId, courseName, courseState, courseStatus);
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.registration,
         options: {
@@ -50,7 +30,6 @@ const RegistrationCourseListPage = () => {
         override: (funcs) => {
             funcs.mappingData = (response) => {
                 if (response.result === true) {
-                    console.log('Dataaaa >>> ', response.data.content);
                     return {
                         data: response.data.content,
                         total: response.data.totalElements,
@@ -68,7 +47,7 @@ const RegistrationCourseListPage = () => {
                 const searchParams = currentUrl.searchParams.toString();
                 return `${pagePath}/create?${searchParams}`;
             };
-        },  
+        },
     });
 
     const formatMoney = (amount) => {
@@ -94,7 +73,7 @@ const RegistrationCourseListPage = () => {
         },
         {
             title: 'Tên sinh viên',
-            dataIndex: 'studentName', 
+            dataIndex: 'studentName',
         },
         {
             title: <FormattedMessage defaultMessage="Giá khóa học" />,
@@ -112,15 +91,13 @@ const RegistrationCourseListPage = () => {
             title: <FormattedMessage defaultMessage="Tổng dự án" />,
             dataIndex: 'totalProject',
             render: (totalProject, record) => {
-                const { minusTrainingProjectMoney } = record; 
-        
+                const { minusTrainingProjectMoney } = record;
+
                 return (
                     <>
                         <div>{`${totalProject}/3`}</div>
                         {minusTrainingProjectMoney !== 0 && (
-                            <div style={{ color: 'orange' }}>
-                                {minusTrainingProjectMoney.toLocaleString()} đ
-                            </div>
+                            <div style={{ color: 'orange' }}>{minusTrainingProjectMoney.toLocaleString()} đ</div>
                         )}
                     </>
                 );
@@ -141,32 +118,28 @@ const RegistrationCourseListPage = () => {
                     console.error('Error parsing schedule data:', e);
                     return null;
                 }
-        
-                const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S']; 
+
+                const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
                 const dayMap = {
-                    t2: 0, 
-                    t3: 1, 
-                    t4: 2, 
-                    t5: 3, 
-                    t6: 4, 
-                    t7: 5, 
-                    cn: 6,  
+                    t2: 0,
+                    t3: 1,
+                    t4: 2,
+                    t5: 3,
+                    t6: 4,
+                    t7: 5,
+                    cn: 6,
                 };
-        
+
                 return (
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                         {daysOfWeek.map((day, index) => {
                             const isToday = index === (new Date().getDay() + 6) % 7;
-                            const dayKey = Object.keys(dayMap).find(key => dayMap[key] === index);
+                            const dayKey = Object.keys(dayMap).find((key) => dayMap[key] === index);
                             const hasSchedule = dayKey && parsedSchedule[dayKey];
                             const scheduleTime = hasSchedule ? parsedSchedule[dayKey] : null;
-        
+
                             return (
-                                <Tooltip
-                                    key={index}
-                                    title={scheduleTime || 'No schedule'} // Show time if available
-                                    placement="top"
-                                >
+                                <Tooltip key={index} title={scheduleTime || 'No schedule'} placement="top">
                                     <div
                                         key={index}
                                         style={{
@@ -180,7 +153,7 @@ const RegistrationCourseListPage = () => {
                                             justifyContent: 'center',
                                             fontWeight: 'bold',
                                             boxSizing: 'border-box',
-                                            cursor : 'pointer',
+                                            cursor: 'pointer',
                                         }}
                                     >
                                         {hasSchedule ? daysOfWeek[index] : ''}
@@ -203,10 +176,12 @@ const RegistrationCourseListPage = () => {
     ];
 
     return (
-        <PageWrapper routes={[
-            { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
-            { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) }, 
-        ]}>
+        <PageWrapper
+            routes={[
+                { breadcrumbName: translate.formatMessage(commonMessage.course), path: routes.coursesPage.path },
+                { breadcrumbName: translate.formatMessage(commonMessage.registrationCourse) },
+            ]}
+        >
             <ListPage
                 searchForm={mixinFuncs.renderSearchForm({ initialValues: queryFilter })}
                 actionBar={mixinFuncs.renderActionBar()}

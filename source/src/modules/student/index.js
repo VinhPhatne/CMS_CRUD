@@ -3,7 +3,7 @@ import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import { Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
+import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined, ContainerOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
@@ -24,7 +24,7 @@ import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { stateCourseOptions } from '@constants/masterData';
-import Icon from '@ant-design/icons/lib/components/Icon';
+import { BaseTooltip } from '@components/common/form/BaseTooltip';
 
 const message = defineMessages({
     objectName: 'course',
@@ -45,28 +45,32 @@ const StudentListPage = () => {
             funcs.mappingData = (response) => {
                 if (response.result === true) {
                     return {
-                        data: response.data.content,
+                        data: response.data.content.map((item) => ({
+                            ...item,
+                            fullName: item.account?.fullName,
+                            id: item.id,
+                        })),
                         total: response.data.totalElements,
                     };
                 }
             };
             funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.registration.getById.baseURL])) return {};
+                //if (!mixinFuncs.hasPermission([apiConfig.registration.getById.baseURL])) return {};
                 return {
-                    registration: ({ studentId, studentName }) => {
+                    registration: (record) => {
+                        const { id, fullName } = record;
+                        console.log('Full Name:', fullName);
                         return (
                             <Button
                                 type="link"
                                 style={{ padding: 0 }}
                                 onClick={() => {
                                     navigate(
-                                        `/student/course?studentId=${studentId}&studentName=${encodeURIComponent(
-                                            studentName,
-                                        )}`,
+                                        `/student/course?studentId=${id}&studentName=${encodeURIComponent(fullName)}`,
                                     );
                                 }}
                             >
-                                <Icon type="account-book" theme="twoTone" />
+                                <ContainerOutlined />
                             </Button>
                         );
                     },
@@ -74,17 +78,6 @@ const StudentListPage = () => {
             };
         },
     });
-
-    const formatMoney = (amount) => {
-        if (isNaN(amount)) {
-            return 'Invalid amount';
-        }
-        return new Intl.NumberFormat('USA', {
-            style: 'currency',
-            currency: 'USD',
-            useGrouping: false,
-        }).format(amount);
-    };
 
     const columns = [
         {

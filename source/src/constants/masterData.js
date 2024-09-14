@@ -55,7 +55,7 @@ export const languageOptions = [
 
 export const stateResgistration = [
     { value: REGISTRATION_STATE_REGISTER, label: stateRegistrationMessage.register, color: '#00A648' },
-    { value: REGISTRATION_STATE_LEARNING, label: stateRegistrationMessage.learning, color: '#FFBF00' },
+    { value: REGISTRATION_STATE_LEARNING, label: stateRegistrationMessage.learning, color: 'blue' },
     { value: REGISTRATION_STATE_FINISHED, label: stateRegistrationMessage.finished, color: '#CC0000' },
     { value: REGISTRATION_STATE_CANCEL, label: stateRegistrationMessage.canceled, color: '#CC0000' },
 ];
@@ -79,6 +79,14 @@ export const statusOptions = [
 ];
 
 export const stateCourseOptions = [
+    { value: STATE_COURSE_PREPARED, label: stateCourseMessage.prepared, color: '#00A648' },
+    { value: STATE_COURSE_STARTED, label: stateCourseMessage.started, color: 'orange' },
+    { value: STATE_COURSE_FINISHED, label: stateCourseMessage.completed, color: 'green' },
+    { value: STATE_COURSE_CANCELED, label: stateCourseMessage.canceled, color: '#CC0000' },
+    { value: STATE_COURSE_RECRUITED, label: stateCourseMessage.recruitment, color: '#CC0000' },
+];
+
+export const stateCourseRegistrationOptions = [
     { value: STATE_COURSE_PREPARED, label: stateCourseMessage.prepared, color: '#00A648' },
     { value: STATE_COURSE_STARTED, label: stateCourseMessage.started, color: 'orange' },
     { value: STATE_COURSE_FINISHED, label: stateCourseMessage.completed, color: 'green' },
