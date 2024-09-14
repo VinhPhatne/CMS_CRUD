@@ -4,9 +4,8 @@ import useListBase from '@hooks/useListBase';
 import apiConfig from '@constants/apiConfig';
 import React, { useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import useTranslate from '@hooks/useTranslate';
 import { DATE_FORMAT_VALUE, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants/index';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {  useLocation,  useParams } from 'react-router-dom';
 import useFetch from '@hooks/useFetch';
 import { HolderOutlined, MenuOutlined } from '@ant-design/icons';
 import { DndContext } from '@dnd-kit/core';
@@ -58,16 +57,9 @@ const Row = (props) => {
     );
 };
 
-const message = defineMessages({
-    objectName: {
-        defaultMessage: 'Bài giảng',
-    },
-});
 const LectureListPage = () => {
     const { id: subjectId } = useParams();
     const { pathname: pagePath } = useLocation();
-
-    console.log('subjectId', subjectId);
 
     const { data: dataListTask } = useFetch(apiConfig.lecture.getBySubject, {
         pathParams: { id: subjectId },
@@ -77,8 +69,6 @@ const LectureListPage = () => {
 
     const notification = useNotification();
 
-    console.log('dataListTask', dataListTask);
-
     const [items, setItems] = useState([]);
     const [updatedItems, setUpdatedItems] = useState([]);
     const [selectedChapterId, setSelectedChapterId] = useState(null);
@@ -86,8 +76,6 @@ const LectureListPage = () => {
     const { execute: updateSortLecture } = useFetch(apiConfig.lecture.updateSort, {
         immediate: false,
     });
-
-    console.log('selectedChapterId', selectedChapterId);
 
     useEffect(() => {
         if (dataListTask) {
@@ -133,43 +121,33 @@ const LectureListPage = () => {
 
     const handleLectureClick = (record) => {
         const { id, lectureKind, ordering } = record;
-
+    
         if (lectureKind === 1) {
             setSelectedChapterId(id);
-            setSelectedChapterOrdering(ordering); // Lưu ordering vào state
-
-            // Tìm giá trị ordering kế tiếp
+            setSelectedChapterOrdering(ordering);
+    
             const sortedItems = [...items]
                 .filter((item) => item.lectureKind === 1)
                 .sort((a, b) => a.ordering - b.ordering);
+    
             const currentIndex = sortedItems.findIndex((item) => item.id === id);
             const nextItem = sortedItems[currentIndex + 1];
-            setNextChapterOrdering(nextItem.ordering);
+    
             if (nextItem) {
-                console.log('Ordering kế tiếp:', nextItem.ordering);
+                setNextChapterOrdering(nextItem.ordering);
             } else {
-                console.log('Đây là Chương cuối cùng hoặc không có Chương kế tiếp.');
+                setNextChapterOrdering(null);
             }
         }
     };
-
-    console.log('items', items);
-    console.log('selectedChapterOrdering', selectedChapterOrdering);
-    console.log('nextChapterOrdering', nextChapterOrdering);
+    
 
     const { data, mixinFuncs, loading, pagination, queryFilter } = useListBase({
         apiConfig: apiConfig.lecture,
         options: {
             pageSize: DEFAULT_TABLE_ITEM_SIZE,
-            //objectName: translate.formatMessage(message.objectName),
         },
         override: (funcs) => {
-            // funcs.prepareGetListPathParams = (params) => {
-            //     return {
-            //         subjectId: subjectId,
-            //     };
-            // };
-
             funcs.mappingData = (response) => {
                 if (response.result === true) {
                     return {
@@ -206,9 +184,6 @@ const LectureListPage = () => {
                         style={{
                             display: 'flex',
                             cursor: lectureKind === 1 ? 'pointer' : 'default',
-                            width: '100%',
-                            height: '500%',
-                            backgroundColor: isSelectedChapter ? 'grey' : 'transparent',
                         }}
                     >
                         <span
@@ -234,7 +209,11 @@ const LectureListPage = () => {
         ),
     ];
 
-    //console.log('Items:', items);
+    const getRowStyle = (record) => ({
+        backgroundColor: record.id === selectedChapterId ? '#d3d3d3' : 'transparent',
+        cursor: 'pointer',
+    });
+
     const sortedItems = items.sort((a, b) => a.ordering - b.ordering);
 
     return (
@@ -261,16 +240,19 @@ const LectureListPage = () => {
                                     dataSource={sortedItems}
                                     loading={loading}
                                     pagination={false}
+                                    onRow={(record) => ({
+                                        style: getRowStyle(record),
+                                    })}
                                 />
                             </SortableContext>
                         </DndContext>
                         <Button
                             onClick={handleUpdatePositions}
                             type="primary"
-                            style={{ marginLeft: '520px', width: '140px' }}
+                            style={{ marginLeft: '600px',marginTop:"20px", width: '140px' }}
                         >
                             Cập nhật vị trí
-                        </Button>{' '}
+                        </Button>
                     </>
                 }
             />

@@ -37,6 +37,19 @@ export const stateProjectMessage = defineMessages({
     failed: 'Thất bại',
 });
 
+export const stateTaskMessage = defineMessages({
+    create: 'Đang tạo',
+    running: 'Đang xử lý',
+    canceled: 'Đã hủy',
+    testing: 'Đang test',
+});
+
+export const taskKindMessage = defineMessages({
+    feature: 'Tính năng',
+    bug: 'Bug',
+    testCase: 'Test Case',
+});
+
 export const nationKindMessage = defineMessages({
     province: 'Province',
     district: 'District',

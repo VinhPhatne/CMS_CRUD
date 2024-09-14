@@ -1,9 +1,7 @@
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { categoryKind } from '@constants';
 import apiConfig from '@constants/apiConfig';
-import useFetch from '@hooks/useFetch';
 import useSaveBase from '@hooks/useSaveBase';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import routes from './routes';
 import useTranslate from '@hooks/useTranslate';

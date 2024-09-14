@@ -35,7 +35,6 @@ const StoryProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedF
         values.projectId = projectId;
         values.status = 1;
         values.state = 1;
-        console.log('check data', values);
         return mixinFuncs.handleSubmit({ ...values });
     };
     useEffect(() => {

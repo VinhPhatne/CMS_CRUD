@@ -19,6 +19,13 @@ import {
     STATE_PROJECT_DONE,
     STATE_PROJECT_CANCEL,
     STATE_PROJECT_FAILED,
+    STATE_TASK_CREATE,
+    STATE_TASK_RUNNING,
+    STATE_TASK_CANCEL,
+    STATE_TASK_TEST,
+    TASK_KIND_FEATURE,
+    TASK_KIND_BUG,
+    TASK_KIND_TESTCASE,
 } from '@constants';
 import { defineMessages } from 'react-intl';
 import {
@@ -27,7 +34,12 @@ import {
     stateRegistrationMessage,
     stateCourseMessage,
     stateProjectMessage,
+    stateTaskMessage,
+    taskKindMessage,
 } from './intl';
+import BugImage from '@assets/images/iconBug.jpg';
+import FeatureImage from '@assets/images/iconFeature.jpg';
+import TestCase from '@assets/images/iconTestcase.jpg';
 
 const commonMessage = defineMessages({
     statusActive: 'Active',
@@ -68,8 +80,8 @@ export const statusOptions = [
 
 export const stateCourseOptions = [
     { value: STATE_COURSE_PREPARED, label: stateCourseMessage.prepared, color: '#00A648' },
-    { value: STATE_COURSE_STARTED, label: stateCourseMessage.started, color: '#FFBF00' },
-    { value: STATE_COURSE_FINISHED, label: stateCourseMessage.finished, color: '#CC0000' },
+    { value: STATE_COURSE_STARTED, label: stateCourseMessage.started, color: 'orange' },
+    { value: STATE_COURSE_FINISHED, label: stateCourseMessage.completed, color: 'green' },
     { value: STATE_COURSE_CANCELED, label: stateCourseMessage.canceled, color: '#CC0000' },
     { value: STATE_COURSE_RECRUITED, label: stateCourseMessage.recruitment, color: '#CC0000' },
 ];
@@ -77,9 +89,22 @@ export const stateCourseOptions = [
 export const stateProjectOptions = [
     { value: STATE_PROJECT_CREATE, label: stateProjectMessage.create, color: 'yellow' },
     { value: STATE_PROJECT_RUNNING, label: stateProjectMessage.running, color: 'blue' },
-    { value: STATE_PROJECT_DONE, label: stateProjectMessage.done, color: '#CC0000' },
+    { value: STATE_PROJECT_DONE, label: stateProjectMessage.done, color: 'green' },
     { value: STATE_PROJECT_CANCEL, label: stateProjectMessage.canceled, color: '#CC0000' },
     { value: STATE_PROJECT_FAILED, label: stateProjectMessage.failed, color: '#CC0000' },
+];
+
+export const stateTaskOptions = [
+    { value: STATE_TASK_CREATE, label: stateTaskMessage.create, color: 'yellow' },
+    { value: STATE_TASK_RUNNING, label: stateTaskMessage.running, color: 'blue' },
+    { value: STATE_TASK_CANCEL, label: stateTaskMessage.canceled, color: 'green' },
+    { value: STATE_TASK_TEST, label: stateTaskMessage.testing, color: '#CC0000' },
+];
+
+export const kindTaskOptions = [
+    { value: TASK_KIND_FEATURE, label: taskKindMessage.feature, imageUrl: FeatureImage },
+    { value: TASK_KIND_BUG, label: taskKindMessage.bug, imageUrl: BugImage },
+    { value: TASK_KIND_TESTCASE, label: taskKindMessage.testCase, imageUrl: TestCase },
 ];
 
 export const stateOptions = [

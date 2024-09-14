@@ -132,15 +132,15 @@ const CourseListPage = () => {
             title: <FormattedMessage id="courseListPage.status" defaultMessage="Trạng thái" />,
             width: 180,
             dataIndex: 'state',
-            align: 'right',
-            // render: (state) => {
-            //     const stateOption = stateCourseOptions.find((option) => option.value === state);
-            //     return stateOption ? (
-            //         <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
-            //     ) : (
-            //         <FormattedMessage id="courseListPage.unknownStatus" defaultMessage="Không xác định" />
-            //     );
-            // },
+            align: 'center',
+            render: (state) => {
+                const stateOption = stateCourseOptions.find((option) => option.value === state);
+                return stateOption ? (
+                    <Tag color={stateOption.color}>{translate.formatMessage(stateOption.label)}</Tag>
+                ) : (
+                    <FormattedMessage id="courseListPage.unknownStatus" defaultMessage="Không xác định" />
+                );
+            },
         },
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(

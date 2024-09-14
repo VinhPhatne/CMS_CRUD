@@ -2,38 +2,20 @@ import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import useTranslate from '@hooks/useTranslate';
 import { Button, Tag, Tooltip } from 'antd';
 import BaseTable from '@components/common/table/BaseTable';
-import { convertUtcToLocalTime } from '@utils';
-import { AppConstants, categoryKind, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
-import { commonMessage } from '@locales/intl';
-import { FieldTypes } from '@constants/formConfig';
-import { stateProjectOptions, statusOptions } from '@constants/masterData';
-import PageWrapper from '@components/common/layout/PageWrapper';
+import { AppConstants, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
 import ListPage from '@components/common/layout/ListPage';
-import axios from 'axios';
 import useFetch from '@hooks/useFetch';
 import { useLocation } from 'react-router-dom';
 import AvatarField from '@components/common/form/AvatarField';
 import { UserOutlined } from '@ant-design/icons';
 
-const messages = defineMessages({
-    objectName: {
-        id: 'generalProjectPage.objectName',
-        defaultMessage: 'Cài đặt chung',
-    },
-});
-
 const MemberProject = ({ projectId }) => {
-    const translate = useTranslate();
-    const intl = useIntl();
 
     const location = useLocation();
-    const stateValues = translate.formatKeys(stateProjectOptions, ['label']);
 
     const {
-        loading: autoCompleteLoading,
         execute: fetchAutoCompleteData,
         data: autoCompleteData,
     } = useFetch(apiConfig.memberProject.autocomplete, {
@@ -63,7 +45,6 @@ const MemberProject = ({ projectId }) => {
         apiConfig: apiConfig.memberProject,
         options: {
             pageSize: DEFAULT_TABLE_ITEM_SIZE,
-            //objectName: intl.formatMessage(messages.objectName),
         },
         override: (funcs) => {
             funcs.mappingData = (response) => {
@@ -197,7 +178,6 @@ const MemberProject = ({ projectId }) => {
         },
 
         mixinFuncs.renderActionColumn(
-            //{ editSetting: mixinFuncs.hasPermission([apiConfig.story.update?.baseURL]), delete: false },
             {
                 edit: true,
                 delete: true,

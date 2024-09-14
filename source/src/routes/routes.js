@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Routes, BrowserRouter, Route } from 'react-router-dom';
+import { Routes, BrowserRouter, Route, Navigate } from 'react-router-dom';
 
 import ValidateAccess from './ValidateAccess';
 import AppNavigate from '@modules/main/AppNavigate';
@@ -13,7 +13,6 @@ const routesArray = Object.values(routes);
 
 const AppRoutes = () => {
     const { isAuthenticated, loading: loadingProfile, profile } = useAuth();
-
 
     const renderRoute = (route) => {
         return (
@@ -47,6 +46,7 @@ const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Navigate to="/course" />} />
                 <Route element={<AppNavigate />}>{routesArray.map(renderRoute)}</Route>
             </Routes>
         </BrowserRouter>

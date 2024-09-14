@@ -259,8 +259,6 @@ const ProjectListPage = () => {
                 );
             },
         },
-
-        //mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
                 salary: true,

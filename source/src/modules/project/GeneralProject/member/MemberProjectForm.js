@@ -2,8 +2,6 @@ import { Button, Card, Checkbox, Col, Form, Row, Space, Table, TimePicker } from
 import React, { useEffect, useState } from 'react';
 import useBasicForm from '@hooks/useBasicForm';
 import apiConfig from '@constants/apiConfig';
-import useTranslate from '@hooks/useTranslate';
-import { stateResgistration } from '@constants/masterData';
 import { FormattedMessage } from 'react-intl';
 import { BaseForm } from '@components/common/form/BaseForm';
 import AutoCompleteField from '@components/common/form/AutoCompleteField';
@@ -25,8 +23,6 @@ const DAYS_OF_WEEK = [
 const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, isEditing }) => {
     const queryParams = new URLSearchParams(window.location.search);
     const projectId = queryParams.get('projectId');
-
-    const [isFormChanged, setIsFormChanged] = useState(false);
 
     const { form, mixinFuncs, onValuesChange } = useBasicForm({
         onSubmit,
@@ -120,6 +116,7 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
             return item;
         });
         setScheduleData(newScheduleData);
+        setIsChangedFormValues(true);
         form.setFieldsValue({ schedule: JSON.stringify(newScheduleData) });
     };
 
@@ -135,6 +132,7 @@ const MemberProjectForm = ({ formId, actions, dataDetail, onSubmit, setIsChanged
             return item;
         });
         setScheduleData(newScheduleData);
+        setIsChangedFormValues(true);
         form.setFieldsValue({ schedule: JSON.stringify(newScheduleData) });
     };
 
