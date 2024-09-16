@@ -33,7 +33,6 @@ const DAYS_OF_WEEK = [
 const DeveloperForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormValues, categories, isEditing }) => {
     const { execute: executeUpFile } = useFetch(apiConfig.file.upload);
     const [avatarUrl, setAvatarUrl] = useState(null);
-    const [bannerUrl, setBannerUrl] = useState(null);
 
     const translate = useTranslate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);

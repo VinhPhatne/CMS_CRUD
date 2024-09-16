@@ -9,6 +9,7 @@ export const commonMessage = defineMessages({
     course: 'Course',
     developerName: 'Developer Name',
     developer: 'Developer',
+    registrationProject: 'Registration Project',
     student: 'Student',
     subject: 'Subject',
     registrationCourse: 'Registration Course',

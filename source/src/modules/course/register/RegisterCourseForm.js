@@ -39,7 +39,6 @@ const RegisterCourseForm = ({
 }) => {
     const queryParams = new URLSearchParams(window.location.search);
     const courseId = queryParams.get('courseId');
-    console.log('courseId', courseId);
 
     const translate = useTranslate();
     const statusValues = translate.formatKeys(stateResgistration, ['label']);
