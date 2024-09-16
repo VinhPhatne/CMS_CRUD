@@ -86,25 +86,26 @@ const EditGenralModal = ({
 
     const renderField = () => {
         const dataType = data.dataType;
-        if (dataType == dataTypeSetting.INT || dataType == dataTypeSetting.DOUBLE) {
-            return (
-                <Col span={24}>
-                    <NumericField
-                        label={<FormattedMessage defaultMessage="Nội dung" />}
-                        name="valueData"
-                        min={0}
-                        max={ localStorage.getItem(routes.settingsPage.keyActiveTab) == settingGroups.REVENUE && 100}
-                        formatter={(value) =>
-                            localStorage.getItem(routes.settingsPage.keyActiveTab) == settingGroups.REVENUE
-                                ? `${value}%`
-                                : `${value}`
-                        }
-                        parser={(value) => value.replace('%', '')}
-                        onChange={handleInputChange}
-                    />
-                </Col>
-            );
-        } else if (dataType == dataTypeSetting.RICHTEXT) {
+        // if (dataType == dataTypeSetting.INT || dataType == dataTypeSetting.DOUBLE) {
+        //     return (
+        //         <Col span={24}>
+        //             <NumericField
+        //                 label={<FormattedMessage defaultMessage="Nội dung" />}
+        //                 name="valueData"
+        //                 min={0}
+        //                 max={localStorage.getItem(routes.settingsPage.keyActiveTab) == settingGroups.REVENUE && 100}
+        //                 formatter={(value) =>
+        //                     localStorage.getItem(routes.settingsPage.keyActiveTab) == settingGroups.REVENUE
+        //                         ? `${value}%`
+        //                         : `${value}`
+        //                 }
+        //                 parser={(value) => value.replace('%', '')}
+        //                 onChange={handleInputChange}
+        //             />
+        //         </Col>
+        //     );
+        // } else
+        if (dataType == dataTypeSetting.RICHTEXT) {
             return (
                 <Col span={24}>
                     <RichTextField
