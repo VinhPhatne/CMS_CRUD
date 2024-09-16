@@ -149,6 +149,9 @@ export const STATE_TASK_RUNNING = 2;
 export const STATE_TASK_CANCEL = 3;
 export const STATE_TASK_TEST = 4;
 
+export const SALARY_HOUR = 1;
+export const SALARY_FIXED = 2;
+
 export const TASK_KIND_FEATURE = 1;
 export const TASK_KIND_BUG = 2;
 export const TASK_KIND_TESTCASE = 3;
