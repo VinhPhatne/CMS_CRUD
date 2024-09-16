@@ -31,6 +31,7 @@ export const commonMessage = defineMessages({
     userAdminLeader: 'Admins Leader',
     profile: 'Profile',
     avatar: 'Avatar',
+    content: 'content',
     currentPassword: 'Current password',
     newPassword: 'New password',
     validatePassword: 'Password must be at least 6 characters',
