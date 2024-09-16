@@ -21,6 +21,11 @@ export const stateRegistrationMessage = defineMessages({
     canceled: 'Đã huỷ',
 });
 
+export const salaryKindMessage = defineMessages({
+    salaryHour: 'Lương theo giờ',
+    salaryFixed: 'Lương cố định',
+});
+
 export const stateCourseMessage = defineMessages({
     prepared: 'Chưa bắt đầu',
     recruitment: 'Chiêu sinh',

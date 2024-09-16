@@ -38,10 +38,4 @@ export default {
         auth: true,
         component: ProjectRegistrationSavePage,
     },
-    // registerSavePage: {
-    //     path: '/course/registration/:id',
-    //     title: 'Course Register Page',
-    //     auth: true,
-    //     component: RegisterCourseSavePage,
-    // },
 };

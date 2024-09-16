@@ -6,6 +6,8 @@ import { FormattedMessage, defineMessages } from 'react-intl';
 import routes from '../routes';
 import useTranslate from '@hooks/useTranslate';
 import DayOffForm from './DayOffForm';
+import { commonMessage } from '@locales/intl';
+import { generatePath, useLocation } from 'react-router-dom';
 
 const message = defineMessages({
     objectName: 'developer',
@@ -13,6 +15,13 @@ const message = defineMessages({
 
 const DayOffSavePage = () => {
     const translate = useTranslate();
+
+    const location = useLocation();
+    const queryString = location.search;
+    const params = new URLSearchParams(location.search);
+    const developerId = params.get('developerId');
+    const developerName = params.get('developerName');
+
     const { detail, mixinFuncs, loading, setIsChangedFormValues, isEditing, title } = useSaveBase({
         apiConfig: {
             getById: apiConfig.dayOff.getById,
@@ -22,6 +31,7 @@ const DayOffSavePage = () => {
         options: {
             getListUrl: routes.DeveloperDayOffPage.path,
             objectName: translate.formatMessage(message.objectName),
+            initialData: { developerId, developerName },
         },
         override: (funcs) => {
             funcs.prepareUpdateData = (data) => {
@@ -42,8 +52,12 @@ const DayOffSavePage = () => {
             loading={loading}
             routes={[
                 {
-                    breadcrumbName: <FormattedMessage defaultMessage="Developer" />,
+                    breadcrumbName: translate.formatMessage(commonMessage.developer),
                     path: routes.DeveloperListPage.path,
+                },
+                {
+                    breadcrumbName: translate.formatMessage(commonMessage.dayOff),
+                    path: `/developer/day-off-log${queryString}`,
                 },
                 { breadcrumbName: title },
             ]}
