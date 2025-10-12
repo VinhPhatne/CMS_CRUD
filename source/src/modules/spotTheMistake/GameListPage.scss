@@ -1,0 +1,120 @@
+.game-list-page {
+    padding: 24px;
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        h1 {
+            margin: 0;
+            color: #262626;
+            font-size: 24px;
+            font-weight: 600;
+        }
+    }
+
+    .stats-row {
+        margin-bottom: 24px;
+
+        .ant-card {
+            text-align: center;
+
+            .ant-statistic-title {
+                color: #8c8c8c;
+                font-size: 14px;
+            }
+
+            .ant-statistic-content {
+                color: #262626;
+                font-size: 24px;
+                font-weight: 600;
+            }
+        }
+    }
+
+    .games-table-card {
+        .game-title {
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 4px;
+        }
+
+        .game-description {
+            color: #8c8c8c;
+            font-size: 12px;
+        }
+
+        .game-thumbnail {
+            width: 60px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .game-settings {
+            font-size: 12px;
+            color: #595959;
+
+            div {
+                margin-bottom: 2px;
+            }
+        }
+
+        .game-stats {
+            font-size: 12px;
+            color: #595959;
+
+            div {
+                margin-bottom: 2px;
+            }
+        }
+    }
+
+    .game-preview {
+        .preview-image {
+            margin: 16px 0;
+            text-align: center;
+
+            img {
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .preview-settings {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+
+            p {
+                margin: 4px 0;
+                color: #595959;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .game-list-page {
+        padding: 16px;
+
+        .page-header {
+            flex-direction: column;
+            gap: 16px;
+            align-items: stretch;
+
+            h1 {
+                text-align: center;
+            }
+        }
+
+        .stats-row {
+            .ant-col {
+                margin-bottom: 16px;
+            }
+        }
+    }
+}

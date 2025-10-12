@@ -1,0 +1,322 @@
+// Absolute positioning container - hoàn toàn không bị ảnh hưởng bởi window resize
+.absolute-image-container {
+    position: relative;
+    width: 800px; // Fixed width - NEVER changes
+    height: 500px; // Fixed height - NEVER changes
+    margin: 0 auto; // Always centered
+    border: 2px dashed #d9d9d9; // EXACTLY same as admin
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafafa; // EXACTLY same as admin
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; // Include border in width calculation
+
+    &.playable {
+        cursor: crosshair;
+        // No hover effects to prevent any positioning changes
+    }
+
+    .game-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        user-select: none;
+        // Safari iOS specific fixes
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        // Prevent image scaling on Safari iOS
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+
+    // Regions are positioned absolutely within this container
+    .mistake-region {
+        position: absolute;
+        border: 2px solid #ff4d4f;
+        border-radius: 4px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        z-index: 10;
+        // Anti-aliasing fixes for pixel-perfect positioning
+        image-rendering: pixelated;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+
+        &.found {
+            background-color: #52c41a !important;
+            border-color: #52c41a;
+            animation: foundPulse 0.6s ease-in-out;
+        }
+    }
+
+    .click-effect {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #ff4d4f;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: clickRipple 1s ease-out;
+        transform: translate(-50%, -50%);
+        z-index: 20;
+    }
+}
+
+// Admin container - EXACTLY the same as user container
+.absolute-admin-container {
+    position: relative;
+    width: 800px; // EXACTLY same as user
+    height: 500px; // EXACTLY same as user
+    margin: 0 auto; // Always centered
+    border: 2px dashed #d9d9d9;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; // Include border in width calculation
+
+    .game-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+
+    .region-item {
+        position: absolute;
+        border-radius: 4px;
+        user-select: none;
+        z-index: 10;
+        transition: all 0.2s ease;
+        // Performance optimizations
+        will-change: transform, left, top, width, height;
+        transform: translateZ(0); // Force hardware acceleration
+        backface-visibility: hidden;
+        // Safari iOS touch fixes
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+
+        &.selected {
+            box-shadow: 0 0 0 2px #1890ff;
+        }
+
+        &.dragging {
+            z-index: 20;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: scale(1.02) translateZ(0);
+            // Disable transitions during drag for better performance
+            transition: none;
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #1890ff;
+            border: 1px solid white;
+            border-radius: 50%;
+            z-index: 20;
+
+            // Corner handles
+            &.resize-nw {
+                top: -4px;
+                left: -4px;
+                cursor: nw-resize;
+            }
+            &.resize-ne {
+                top: -4px;
+                right: -4px;
+                cursor: ne-resize;
+            }
+            &.resize-sw {
+                bottom: -4px;
+                left: -4px;
+                cursor: sw-resize;
+            }
+            &.resize-se {
+                bottom: -4px;
+                right: -4px;
+                cursor: se-resize;
+            }
+
+            // Edge handles
+            &.resize-n {
+                top: -4px;
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: n-resize;
+            }
+            &.resize-s {
+                bottom: -4px;
+                left: 50%;
+                transform: translateX(-50%);
+                cursor: s-resize;
+            }
+            &.resize-w {
+                top: 50%;
+                left: -4px;
+                transform: translateY(-50%);
+                cursor: w-resize;
+            }
+            &.resize-e {
+                top: 50%;
+                right: -4px;
+                transform: translateY(-50%);
+                cursor: e-resize;
+            }
+        }
+    }
+}
+
+// Animations
+@keyframes foundPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+@keyframes clickRipple {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+// Responsive adjustments - but maintain fixed dimensions
+@media (max-width: 900px) {
+    .absolute-image-container,
+    .absolute-admin-container {
+        width: 100%;
+        max-width: 800px; // Still maintain max width
+        height: 450px; // Keep reasonable height for regions
+    }
+}
+
+@media (max-width: 600px) {
+    .absolute-image-container,
+    .absolute-admin-container {
+        height: 400px; // Keep enough height for regions to be visible
+    }
+}
+
+@media (max-width: 480px) {
+    .absolute-image-container,
+    .absolute-admin-container {
+        height: 350px; // Minimum height for very small screens
+    }
+}
+
+// Force container to maintain aspect ratio
+.absolute-image-container,
+.absolute-admin-container {
+    // Ensure container never changes size due to content
+    flex-shrink: 0;
+    flex-grow: 0;
+
+    // Prevent any external influences
+    box-sizing: border-box;
+
+    // Ensure consistent positioning
+    position: relative;
+}
+
+// Safari iOS specific fixes
+@supports (-webkit-touch-callout: none) {
+    .absolute-image-container,
+    .absolute-admin-container {
+        // Safari iOS specific container fixes
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .game-image {
+        // Safari iOS image fixes
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .region-item {
+        // Safari iOS region fixes
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+}
+
+// Mobile responsiveness for Safari iOS
+@media screen and (max-width: 768px) {
+    .game-image-container {
+        padding: 10px;
+        // Ensure container maintains fixed dimensions
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .absolute-image-container,
+    .absolute-admin-container {
+        width: 800px; // Fixed width - same as desktop
+        height: 500px; // Fixed height - same as desktop
+        margin: 0 auto;
+        // Scale down proportionally for mobile
+        transform: scale(0.8);
+        transform-origin: center;
+        // Ensure regions are visible
+        overflow: visible;
+    }
+
+    .game-image {
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    // Make regions more visible on mobile
+    .mistake-region {
+        border-width: 3px; // Thicker border for mobile
+        min-width: 20px; // Minimum size for touch
+        min-height: 20px; // Minimum size for touch
+        pointer-events: auto; // Enable touch on mobile
+    }
+}
+
+// Very small mobile screens
+@media screen and (max-width: 480px) {
+    .absolute-image-container,
+    .absolute-admin-container {
+        width: 800px; // Fixed width - same as desktop
+        height: 500px; // Fixed height - same as desktop
+        margin: 0 auto;
+        // Scale down more for very small screens
+        transform: scale(0.6);
+        transform-origin: center;
+    }
+}

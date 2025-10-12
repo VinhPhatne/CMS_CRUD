@@ -1,5 +1,5 @@
 import React from 'react';
-import { UsergroupAddOutlined, ControlOutlined, InboxOutlined } from '@ant-design/icons';
+import { UsergroupAddOutlined, ControlOutlined, InboxOutlined, GamepadOutlined } from '@ant-design/icons';
 import routes from '@routes';
 import { FormattedMessage } from 'react-intl';
 import apiConfig from './apiConfig';
@@ -44,6 +44,19 @@ export const navMenuConfig = [
                 label: <FormattedMessage defaultMessage="Dự án" />,
                 key: 'project',
                 path: routes.projectListPage.path,
+            },
+        ],
+    },
+    {
+        label: <FormattedMessage defaultMessage="Trò chơi" />,
+        key: 'tro-choi',
+        icon: <IconSettings />,
+        permission: apiConfig.spotTheMistake?.getList?.baseURL || '/api/spot-the-mistake',
+        children: [
+            {
+                label: <FormattedMessage defaultMessage="Spot the Mistake" />,
+                key: 'spot-the-mistake',
+                path: routes.gameListPage.path,
             },
         ],
     },
