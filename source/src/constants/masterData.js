@@ -26,6 +26,8 @@ import {
     TASK_KIND_FEATURE,
     TASK_KIND_BUG,
     TASK_KIND_TESTCASE,
+    SALARY_HOUR,
+    SALARY_FIXED,
 } from '@constants';
 import { defineMessages } from 'react-intl';
 import {
@@ -36,6 +38,7 @@ import {
     stateProjectMessage,
     stateTaskMessage,
     taskKindMessage,
+    salaryKindMessage,
 } from './intl';
 import BugImage from '@assets/images/iconBug.jpg';
 import FeatureImage from '@assets/images/iconFeature.jpg';
@@ -76,6 +79,11 @@ export const statusOptions = [
     { value: STATUS_ACTIVE, label: commonMessage.statusActive, color: '#00A648' },
     { value: STATUS_PENDING, label: commonMessage.statusPending, color: '#FFBF00' },
     { value: STATUS_INACTIVE, label: commonMessage.statusInactive, color: '#CC0000' },
+];
+
+export const salaryKindOptions = [
+    { value: SALARY_HOUR, label: salaryKindMessage.salaryHour, color: '#00A648' },
+    { value: SALARY_FIXED, label: salaryKindMessage.salaryFixed, color: '#FFBF00' },
 ];
 
 export const stateCourseOptions = [

@@ -1,0 +1,127 @@
+.game-form-page {
+    padding: 24px;
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+
+        h1 {
+            margin: 0;
+            color: #262626;
+            font-size: 24px;
+            font-weight: 600;
+        }
+    }
+
+    .game-form {
+        .form-card {
+            margin-bottom: 24px;
+
+            .ant-card-head {
+                border-bottom: 1px solid #f0f0f0;
+
+                .ant-card-head-title {
+                    color: #262626;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .image-upload-section {
+            .image-preview {
+                margin-top: 16px;
+                text-align: center;
+
+                .preview-image {
+                    max-width: 100%;
+                    max-height: 300px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+            }
+        }
+
+        .region-setup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            border-radius: 6px;
+
+            p {
+                margin: 0;
+                color: #389e0d;
+                font-size: 14px;
+            }
+
+            .region-controls {
+                display: flex;
+                gap: 8px;
+            }
+        }
+
+        .no-image-placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fafafa;
+            border: 2px dashed #d9d9d9;
+            border-radius: 8px;
+            color: #8c8c8c;
+
+            p {
+                margin: 0;
+                font-size: 16px;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 24px 0;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 24px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .game-form-page {
+        padding: 16px;
+
+        .page-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+
+            h1 {
+                text-align: center;
+            }
+        }
+
+        .game-form {
+            .region-setup-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+
+                .region-controls {
+                    justify-content: center;
+                }
+            }
+
+            .form-actions {
+                flex-direction: column;
+
+                .ant-btn {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

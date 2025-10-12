@@ -144,11 +144,7 @@ const CourseRegistration = () => {
                             const scheduleTime = hasSchedule ? parsedSchedule[dayKey] : null;
 
                             return (
-                                <Tooltip
-                                    key={index}
-                                    title={scheduleTime || 'No schedule'} // Show time if available
-                                    placement="top"
-                                >
+                                <Tooltip key={index} title={scheduleTime || 'No schedule'} placement="top">
                                     <div
                                         key={index}
                                         style={{
@@ -214,25 +210,29 @@ const CourseRegistration = () => {
         const state = params.get('state');
         const studentId = params.get('studentId');
         const studentName = params.get('studentName');
-    
+
         mixinFuncs.getList({ state, studentId, studentName });
     }, [location.search]);
 
     const handleSearch = (values) => {
         const params = new URLSearchParams(location.search);
-    
-        // Giữ lại tất cả các tham số hiện tại trong URL
+
         const studentId = params.get('studentId') || '';
         const studentName = params.get('studentName') || '';
-    
-        // Cập nhật tham số 'state' từ form tìm kiếm
+
         params.set('state', values.state || '');
-    
-        // Giữ lại các tham số khác
+
         params.set('studentId', studentId);
         params.set('studentName', studentName);
-    
-        // Điều hướng với URL mới chứa đầy đủ tham số
+
+        navigate({ search: params.toString() });
+    };
+
+    const handleReset = (values) => {
+        const params = new URLSearchParams(location.search);
+        if (params.has('state')) {
+            params.delete('state');
+        }
         navigate({ search: params.toString() });
     };
 
@@ -244,10 +244,11 @@ const CourseRegistration = () => {
             ]}
         >
             <ListPage
-                searchForm={mixinFuncs.renderSearchForm({ 
+                searchForm={mixinFuncs.renderSearchForm({
                     fields: searchFields,
-                    initialValues: queryFilter, 
+                    initialValues: queryFilter,
                     onSearch: handleSearch,
+                    onReset: handleReset,
                 })}
                 title={studentName}
                 baseTable={

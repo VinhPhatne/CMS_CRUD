@@ -9,7 +9,13 @@ import { BaseForm } from '@components/common/form/BaseForm';
 import DatePickerField from '@components/common/form/DatePickerField';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT } from '@constants/index';
+import {
+    DATE_FORMAT_DISPLAY,
+    DATE_FORMAT_VALUE,
+    DEFAULT_FORMAT,
+    TIME_FORMAT_DISPLAY,
+    DATE_DISPLAY_FORMAT,
+} from '@constants/index';
 import { formatDateString } from '@utils/index';
 import BooleanField from '@components/common/form/BooleanField';
 
@@ -19,6 +25,9 @@ const DayOffForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
     const translate = useTranslate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
 
+    const queryParams = new URLSearchParams(location.search);
+    const id = queryParams.get('developerId');
+
     const { form, mixinFuncs, onValuesChange } = useBasicForm({
         onSubmit,
         setIsChangedFormValues,
@@ -27,11 +36,22 @@ const DayOffForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
     const handleSubmit = (values) => {
         values.startDate = formatDateString(values.startDate, DEFAULT_FORMAT);
         values.endDate = formatDateString(values.endDate, DEFAULT_FORMAT);
+        if (id) {
+            values.developerId = id;
+        }
+        values.status = 1;
         const finalValues = {
             ...values,
         };
         console.log('Form Values:', finalValues);
         return mixinFuncs.handleSubmit(finalValues);
+    };
+
+    const [startDate, setStartDate] = useState(null);
+
+    const handleDateChange = (date, dateString) => {
+        setStartDate(date);
+        date = formatDateString(date, DEFAULT_FORMAT);
     };
 
     useEffect(() => {
@@ -48,6 +68,7 @@ const DayOffForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
         form.setFieldsValue({
             ...dataDetail,
             note: dataDetail?.note,
+            isCharged: dataDetail?.isCharged ?? false,
         });
     }, [dataDetail, form]);
 
@@ -60,9 +81,11 @@ const DayOffForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
                             name="startDate"
                             label={<FormattedMessage defaultMessage="Ngày bắt đầu" />}
                             placeholder="Ngày bắt đầu"
-                            format={DATE_FORMAT_DISPLAY}
+                            format={DATE_DISPLAY_FORMAT}
                             style={{ width: '100%' }}
                             required
+                            showTime={TIME_FORMAT_DISPLAY}
+                            onChange={handleDateChange}
                         />
                     </Col>
                     <Col span={12}>
@@ -70,9 +93,13 @@ const DayOffForm = ({ formId, actions, dataDetail, onSubmit, setIsChangedFormVal
                             name="endDate"
                             label={<FormattedMessage defaultMessage="Ngày kết thúc" />}
                             placeholder="Ngày kết thúc"
-                            format={DATE_FORMAT_DISPLAY}
+                            format={DATE_DISPLAY_FORMAT}
                             style={{ width: '100%' }}
                             required
+                            showTime={TIME_FORMAT_DISPLAY}
+                            disabledDate={(current) =>
+                                startDate ? current && current <= startDate.startOf('day') : false
+                            }
                         />
                     </Col>
                 </Row>

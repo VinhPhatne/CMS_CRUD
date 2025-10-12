@@ -15,6 +15,11 @@ const apiConfig = {
             method: 'POST',
             headers: baseHeader,
         },
+        loginSSO: {
+            baseURL: `${apiUrl}v1/account/login-sso`,
+            method: 'POST',
+            headers: baseHeader,
+        },
         loginBasic: {
             baseURL: `${apiUrl}api/token`,
             method: 'POST',
@@ -50,6 +55,11 @@ const apiConfig = {
         getList: {
             baseURL: `${apiUrl}v1/account/list`,
             method: `GET`,
+            headers: baseHeader,
+        },
+        getProfile: {
+            baseURL: `${apiUrl}v1/career/profile`,
+            method: 'GET',
             headers: baseHeader,
         },
         autocomplete: {
@@ -1053,6 +1063,48 @@ const apiConfig = {
             method: 'GET',
             headers: baseHeader,
             isRequiredTenantId: true,
+        },
+    },
+    spotTheMistake: {
+        getList: {
+            baseURL: `${apiTenantUrl}v1/spot-the-mistake/list`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        getById: {
+            baseURL: `${apiTenantUrl}v1/spot-the-mistake/get/:id`,
+            method: 'GET',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        create: {
+            baseURL: `${apiTenantUrl}v1/spot-the-mistake/create`,
+            method: 'POST',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        update: {
+            baseURL: `${apiTenantUrl}v1/spot-the-mistake/update`,
+            method: 'PUT',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        delete: {
+            baseURL: `${apiTenantUrl}v1/spot-the-mistake/delete/:id`,
+            method: 'DELETE',
+            headers: baseHeader,
+            isRequiredTenantId: true,
+        },
+        play: {
+            baseURL: `${apiUrl}v1/spot-the-mistake/play/:id`,
+            method: 'GET',
+            headers: baseHeader,
+        },
+        submitResult: {
+            baseURL: `${apiUrl}v1/spot-the-mistake/submit-result`,
+            method: 'POST',
+            headers: baseHeader,
         },
     },
 };

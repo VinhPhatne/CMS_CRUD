@@ -2,28 +2,36 @@ import BaseTable from '@components/common/table/BaseTable';
 import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import { Button, Modal, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
-import AvatarField from '@components/common/form/AvatarField';
+import React from 'react';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
-import { AppConstants, categoryKind, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
+import { DATE_FORMAT_DISPLAY, DATE_FORMAT_VALUE, DEFAULT_FORMAT, DEFAULT_TABLE_ITEM_SIZE } from '@constants';
 import { FieldTypes } from '@constants/formConfig';
 import { statusOptions } from '@constants/masterData';
 import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
 import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
-import { stateCourseOptions } from '@constants/masterData';
+import { useLocation, useNavigate } from 'react-router-dom';
+import DatePickerField from '@components/common/form/DatePickerField';
+import routes from '../routes';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 const message = defineMessages({
-    objectName: 'course',
+    objectName: 'day off',
 });
+
+dayjs.extend(customParseFormat);
 
 const DeveloperDayOffPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
+    const { pathname: pagePath } = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const developerId = queryParams.get('developerId');
+    const developerName = queryParams.get('developerName');
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.dayOff,
@@ -39,6 +47,14 @@ const DeveloperDayOffPage = () => {
                         total: response.data.totalElements,
                     };
                 }
+            };
+            funcs.getCreateLink = () => {
+                return `${pagePath}/create?developerId=${developerId}&developerName=${developerName}`;
+            };
+            funcs.getItemDetailLink = (dataRow) => {
+                const currentUrl = new URL(window.location.href);
+                const searchParams = currentUrl.searchParams.toString();
+                return `${pagePath}/${dataRow.id}?${searchParams}`;
             };
         },
     });
@@ -64,8 +80,13 @@ const DeveloperDayOffPage = () => {
                 return <div>{createdDateLocal}</div>;
             },
         },
-        { title: <FormattedMessage defaultMessage="Tổng thời gian" />, dataIndex: 'totalHour',align: 'center', width: 150 },
-        { title: <FormattedMessage defaultMessage="Lý do" />, dataIndex: 'note',align: 'center', width: 150 },
+        {
+            title: <FormattedMessage defaultMessage="Tổng thời gian" />,
+            dataIndex: 'totalHour',
+            align: 'center',
+            width: 150,
+        },
+        { title: <FormattedMessage defaultMessage="Lý do" />, dataIndex: 'note', align: 'center', width: 150 },
 
         {
             title: <FormattedMessage defaultMessage="Loại" />,
@@ -91,21 +112,57 @@ const DeveloperDayOffPage = () => {
 
     const searchFields = [
         {
-            key: 'name',
-            placeholder: translate.formatMessage(commonMessage.nameCourses),
+            key: 'fromDate',
+            placeholder: 'Từ ngày',
+            type: FieldTypes.DATE,
+            format: DATE_FORMAT_DISPLAY, // Định dạng hiển thị
         },
         {
-            key: 'status',
-            placeholder: translate.formatMessage(commonMessage.status),
-            type: FieldTypes.SELECT,
-            options: statusValues,
+            key: 'toDate',
+            placeholder: 'Tới ngày',
+            type: FieldTypes.DATE,
+            format: DATE_FORMAT_DISPLAY, // Định dạng hiển thị
         },
     ];
 
+    const handleSearch = (filters) => {
+        const { fromDate, toDate } = filters;
+        let queryParams = new URLSearchParams(location.search);
+
+        if (fromDate) {
+            // Chuyển đổi từ ngày với định dạng mới
+            const formattedStartDate = dayjs(fromDate, DATE_FORMAT_VALUE).format('YYYY-MM-DD'); // Thay đổi định dạng ở đây
+            queryParams.set('fromDate', formattedStartDate);
+        }
+
+        if (toDate) {
+            // Chuyển đổi đến ngày với định dạng mới
+            const formattedEndDate = dayjs(toDate, DATE_FORMAT_VALUE).format('YYYY-MM-DD'); // Thay đổi định dạng ở đây
+            queryParams.set('toDate', formattedEndDate);
+        }
+
+        // Cập nhật URL với các tham số truy vấn mới
+        navigate(`${pagePath}?${queryParams.toString()}`);
+    };
+
     return (
-        <PageWrapper routes={[{ breadcrumbName: translate.formatMessage(commonMessage.course) }]}>
+        <PageWrapper
+            routes={[
+                {
+                    breadcrumbName: translate.formatMessage(commonMessage.developer),
+                    path: routes.DeveloperListPage.path,
+                },
+                {
+                    breadcrumbName: translate.formatMessage(commonMessage.dayOff),
+                },
+            ]}
+        >
             <ListPage
-                searchForm={mixinFuncs.renderSearchForm({ fields: searchFields, initialValues: queryFilter })}
+                searchForm={mixinFuncs.renderSearchForm({
+                    fields: searchFields,
+                    initialValues: queryFilter,
+                    onSubmit: handleSearch,
+                })}
                 actionBar={mixinFuncs.renderActionBar()}
                 baseTable={
                     <BaseTable

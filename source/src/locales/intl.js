@@ -25,6 +25,7 @@ export const commonMessage = defineMessages({
     likedAmount: 'Liked Amount',
     phone: 'Phone',
     group: 'Group',
+    dayOff: 'Day Off',
     createdDate: 'Created date',
     modifiedDate: 'Modified Date',
     userAdmin: 'Admins',

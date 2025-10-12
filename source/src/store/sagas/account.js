@@ -1,11 +1,29 @@
 import { takeLatest } from 'redux-saga/effects';
-import { accountActions } from "@store/actions";
-import { processAction } from "@store/utils";
-import apiConfig from "@constants/apiConfig";
+import { accountActions } from '@store/actions';
+import { processAction } from '@store/utils';
+import apiConfig from '@constants/apiConfig';
+import { UserTypes, storageKeys } from '@constants';
+import { getData } from '@utils/localStorage';
 
-const loginSaga = payload => processAction(apiConfig.account.login, payload);
+const loginSaga = (payload) => processAction(apiConfig.account.login, payload);
 
-const getProfileSaga = payload => processAction(apiConfig.account.getProfile, payload);
+const getProfileSaga = (payload) => {
+    const useKind = getData(storageKeys.USER_KIND);
+    // let api = apiConfig.account.getProfile;
+    // if (useKind === UserTypes.MANAGER) {
+    //     api = apiConfig.organize.getProfile;
+    // } else if (useKind === UserTypes.DEVELOPER) {
+    //     api = apiConfig.developer.getProfile;
+    // } else if (useKind === UserTypes.STUDENT) {
+    //     api = apiConfig.student.getProfile;
+    // } else if (useKind === UserTypes.COMPANY) {
+    //     api = apiConfig.company.getProfile;
+    // }
+
+    let api = apiConfig.organize.getProfile;
+
+    return processAction(api, payload);
+};
 
 const sagas = [
     takeLatest(accountActions.login.type, loginSaga),

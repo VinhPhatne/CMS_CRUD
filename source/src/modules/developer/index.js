@@ -3,27 +3,17 @@ import apiConfig from '@constants/apiConfig';
 import useListBase from '@hooks/useListBase';
 import { Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined, BulbOutlined,FieldTimeOutlined } from '@ant-design/icons';
+import { EyeOutlined, UserOutlined, UsergroupDeleteOutlined, BulbOutlined, FieldTimeOutlined } from '@ant-design/icons';
 import AvatarField from '@components/common/form/AvatarField';
 import ListPage from '@components/common/layout/ListPage';
 import PageWrapper from '@components/common/layout/PageWrapper';
-import {
-    AppConstants,
-    categoryKind,
-    DEFAULT_FORMAT,
-    DEFAULT_TABLE_ITEM_SIZE,
-    DEFAULT_TABLE_ITEM_SIZE_XL,
-} from '@constants';
+import { AppConstants, DEFAULT_TABLE_ITEM_SIZE_XL } from '@constants';
 import { FieldTypes } from '@constants/formConfig';
-import { statusOptions } from '@constants/masterData';
-import useFetch from '@hooks/useFetch';
-import useNotification from '@hooks/useNotification';
+import { salaryKindOptions, statusOptions } from '@constants/masterData';
 import useTranslate from '@hooks/useTranslate';
 import { commonMessage } from '@locales/intl';
-import { convertUtcToLocalTime } from '@utils';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { stateCourseOptions } from '@constants/masterData';
 const message = defineMessages({
     objectName: 'course',
 });
@@ -32,6 +22,7 @@ const DeveloperListPage = () => {
     const translate = useTranslate();
     const navigate = useNavigate();
     const statusValues = translate.formatKeys(statusOptions, ['label']);
+    const salaryValues = translate.formatKeys(salaryKindOptions, ['label']);
 
     const { data, mixinFuncs, queryFilter, loading, pagination } = useListBase({
         apiConfig: apiConfig.developer,
@@ -62,7 +53,9 @@ const DeveloperListPage = () => {
                                 style={{ padding: 0 }}
                                 onClick={() => {
                                     navigate(
-                                        `/developer/project?developerId=${id}&developerName=${encodeURIComponent(name)}`,
+                                        `/developer/project?developerId=${id}&developerName=${encodeURIComponent(
+                                            name,
+                                        )}`,
                                     );
                                 }}
                             >
@@ -70,11 +63,6 @@ const DeveloperListPage = () => {
                             </Button>
                         );
                     },
-                };
-            };
-            funcs.additionalActionColumnButtons = () => {
-                if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
-                return {
                     dayOff: (record) => {
                         const { id, name } = record;
                         return (
@@ -83,7 +71,9 @@ const DeveloperListPage = () => {
                                 style={{ padding: 0 }}
                                 onClick={() => {
                                     navigate(
-                                        `/developer/day-off-log?developerId=${id}&developerName=${encodeURIComponent(name)}`,
+                                        `/developer/day-off-log?developerId=${id}&developerName=${encodeURIComponent(
+                                            name,
+                                        )}`,
                                     );
                                 }}
                             >
@@ -93,6 +83,29 @@ const DeveloperListPage = () => {
                     },
                 };
             };
+            // funcs.additionalActionColumnButtons = () => {
+            //     if (!mixinFuncs.hasPermission([apiConfig.courses.getById.baseURL])) return {};
+            //     return {
+            //         dayOff: (record) => {
+            //             const { id, name } = record;
+            //             return (
+            //                 <Button
+            //                     type="link"
+            //                     style={{ padding: 0 }}
+            //                     onClick={() => {
+            //                         navigate(
+            //                             `/developer/day-off-log?developerId=${id}&developerName=${encodeURIComponent(
+            //                                 name,
+            //                             )}`,
+            //                         );
+            //                     }}
+            //                 >
+            //                     <FieldTimeOutlined />
+            //                 </Button>
+            //             );
+            //         },
+            //     };
+            // };
         },
     });
 
@@ -220,8 +233,8 @@ const DeveloperListPage = () => {
         mixinFuncs.renderStatusColumn({ width: '90px' }),
         mixinFuncs.renderActionColumn(
             {
-                project : true,
-                dayOff : true,   
+                project: true,
+                dayOff: true,
                 edit: true,
                 delete: true,
             },
@@ -233,6 +246,12 @@ const DeveloperListPage = () => {
         {
             key: 'name',
             placeholder: translate.formatMessage(commonMessage.developerName),
+        },
+        {
+            key: 'salaryKind',
+            placeholder: translate.formatMessage(commonMessage.kind),
+            type: FieldTypes.SELECT,
+            options: salaryValues,
         },
         {
             key: 'status',

@@ -55,11 +55,10 @@ const StudentListPage = () => {
                 }
             };
             funcs.additionalActionColumnButtons = () => {
-                //if (!mixinFuncs.hasPermission([apiConfig.registration.getById.baseURL])) return {};
+                if (!mixinFuncs.hasPermission([apiConfig.registrationProject.getList.baseURL])) return {};
                 return {
                     registration: (record) => {
                         const { id, fullName } = record;
-                        console.log('Full Name:', fullName);
                         return (
                             <Button
                                 type="link"
@@ -122,7 +121,7 @@ const StudentListPage = () => {
 
     const searchFields = [
         {
-            key: 'name',
+            key: 'fullName',
             placeholder: translate.formatMessage(commonMessage.developerName),
         },
         {

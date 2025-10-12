@@ -56,7 +56,7 @@ const ValidateAccess = ({
                 }
             }
 
-            return routes.homePage.path;
+            return routes.gameListPage.path;
         }
 
         if (authRequire === accessRouteTypeEnum.REQUIRE_LOGIN && !isAuthenticated) {

@@ -1,7 +1,9 @@
 import { commonMessage } from '@locales/intl';
 
 export const apiUrl = process.env.REACT_APP_API;
+export const apiTenantId = process.env.REACT_APP_TENANT_ID;
 export const enableExposure = process.env.REACT_APP_ENABLE_EXPOSURE === 'true';
+export const envType = process.env.REACT_APP_ENV;
 export const apiTenantUrl = 'http://api-path/';
 
 export const fixedPath = {
@@ -13,6 +15,7 @@ export const fixedPath = {
 export const brandName = 'CMS';
 
 export const appName = 'media-cms-app';
+export const appType = process.env.REACT_APP_TYPE;
 
 export const storageKeys = {
     USER_ACCESS_TOKEN: `${appName}-user-access-token`,
@@ -148,6 +151,9 @@ export const STATE_TASK_CREATE = 1;
 export const STATE_TASK_RUNNING = 2;
 export const STATE_TASK_CANCEL = 3;
 export const STATE_TASK_TEST = 4;
+
+export const SALARY_HOUR = 1;
+export const SALARY_FIXED = 2;
 
 export const TASK_KIND_FEATURE = 1;
 export const TASK_KIND_BUG = 2;
